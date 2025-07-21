@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block body %}
+<h3>Signup form</h3>
+<div class="signupForm">
+        <form action="/signup" method="POST">
+            <label for="username">Enter username: </label>
+            <input type="text" id="username" name = "signup_username"><br>
+            <label for="email">Enter email: </label>
+            <input type="text" id="email" name = "signup_email"><br>
+            <label for="password">Enter password: </label>
+            <input type="text" id="password" name = "signup_password">
+            <input type= "submit" value = "Sign Up">
+        </form>
+</div><br><br>
+
+<h3>Login form</h3>
+<div class="loginForm">
+    <form action="/login" method="POST">
+        <label for="username">Enter username: </label>
+        <input type="text" id="username" name = "login_username"><br>
+        <label for="email">Enter email: </label>
+        <input type="text" id="email" name = "login_email"><br>
+        <label for="password">Enter password: </label>
+        <input type="text" id="password" name = "login_password">
+        <input type= "submit" value = "Login">
+    </form>
+</div>
+
+{% endblock %}

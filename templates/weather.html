@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block head %}
+<a href={{url_for("index")}}>Home Page</a>
+{% if user == {}%}
+<a href={{url_for("account")}}>Signup / Login</a>
+{% else %}
+<a href={{url_for("logout")}}>Logout</a>
+{% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+
+    {% if user != {} %}
+        <p>Hello {{user["username"]}}</p>
+    {% endif %}
+    {% if user["location"] != ""%}
+    <p>{{user["location"]}}</p>
+    {% endif %}
+    <h1>This is the Weather page</h1>
+
+    <p>Temperature is currently {{temperature}} degrees and feels like {{feelslike}} || {{dt}} IN {{location}}</p>
+
+    <form action ="/forecast" method="POST">
+        <label for="locationInp">Enter location: </label>
+        <input type= "text" id= "locationInp" name= "locationInp" placeholder="e.g. London">
+        <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Submit">
+    </form>
+
+    <a href="/forecast/">Forecast</a>
+
+    <p>{{today}}</p>
+{% endblock %}

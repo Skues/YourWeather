@@ -1,14 +1,182 @@
-# from weatherapp import WeatherObject
-from flask import Flask
+from weatherapp import WeatherObject
+from flask import Flask, render_template, request, redirect, url_for
+from database import *
 
 app = Flask(__name__)
+weatherApp = WeatherObject()
+db = connectDatabase()
+cursor = db.cursor()
+logged = False
+user = {}
+forecastLocation = ""
+PREFERENCES = {"Cold":[-10, 10], "Medium": [11, 18], "Hot": [19, 40]}
 
 @app.route("/")
-def test():
-    return "Hello"
+def index():
+    return render_template("index.html")
+
+@app.route("/current")
+def current():
+    signedIn = False
+    if user != {}:
+        sql = f"SELECT * from WeatherData WHERE userID ={user["id"]}"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result != []:
+            weatherApp.setLocation("today", result[2])
+
+        # check if their location is set then set the location and show the current weather for that place using setLocation()
+        signedIn = True
+        # Search for users saved location here
+
+    weatherApp._checkDate(weatherApp.today["dt"])
+    temperature = weatherApp.kelvinToCelcius(weatherApp.today["main"]["temp"])
+    feelslike = weatherApp.kelvinToCelcius(weatherApp.today["main"]["feels_like"])
+    location = weatherApp.location
+    
+    today= weatherApp.today
+    dt = weatherApp.unixToUTC(today["dt"])
+    return render_template("weather.html", today=today, temperature=temperature, feelslike=feelslike, signedIn = signedIn, user=user, dt=dt, location=location)
 
 @app.route("/testing")
 def printing():
-    return "This is the testing side"
+    return render_template("index.html")
 
-app.run(host="0.0.0.0", port=80)
+@app.route("/forecast", methods=["POST", "GET"])
+def forecast():
+    global forecastLocation
+    if forecastLocation != "":
+        weatherApp.setLocation("forecast", forecastLocation)
+        forecastList = weatherApp.list
+        indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+        return render_template("forecast.html", list=forecastList, indexes = indexes)
+
+    location = ""
+    forecastList = []
+    indexes = []
+    if request.method == "POST":
+        location = request.form["locationInp"]
+        print(location)
+        weatherApp.setLocation("forecast", location)
+        forecastList = weatherApp.list
+        indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+        forecastLocation = location
+    # if forecastLocation == "":
+    #     return render_template("forecast.html", forecastSet = False)
+    # location = request.form["locationInp"]
+    # print(location)
+    # weatherApp.setLocation("forecast", location)
+    # forecastList = weatherApp.list
+    # indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+    # print(indexes)
+    return render_template("forecast.html", list = forecastList, indexes = indexes)
+
+@app.route("/signup", methods=["POST"])
+def signup():
+    global user
+    username = request.form["signup_username"]
+    email = request.form["signup_email"]
+    password = request.form["signup_password"]
+    sql = f"SELECT * FROM users WHERE username = '{username}'"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if len(result) > 0:
+        print("Username already exists")
+        return redirect(url_for("account"))
+    insertValues(db, "users", ["username", "email", "password"], [username, email, password])
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    user = {"id": result[3], "username": result[0], "email": result[1]}
+
+    return redirect(url_for("weather"))
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    global user
+    error = ""
+    username = request.form["login_username"]
+    password = request.form["login_password"]
+    sql = f"SELECT * FROM users WHERE username = '{username}'"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if len(result) == 1:
+        print([result])
+        dbPassword = result[0][2]
+        if password == dbPassword:
+            print("password matches")
+            id = result[0][3]
+            username = result[0][0]
+            email = result[0][1]
+            user = {"id": id, "username": username, "email": email}
+        else:
+            print("password did not match: ", dbPassword, password)
+            error = "Password did not match."
+    else:
+        error = "Account not found in database."
+        
+    if error != "":
+        return render_template("account.html", error = error)
+    else:
+        print("going to index")
+        return redirect(url_for("index"))
+
+
+@app.route("/account")
+def account():
+    return render_template("account.html")
+
+@app.route("/logout")
+def logout():
+    global user
+    user = {}
+    return redirect(url_for("index"))
+
+@app.route("/weather")
+def weather():
+    return render_template("weathersubmit.html")
+
+@app.route("/submitWeather", methods=["POST"])
+def submitWeather():
+    global user
+    if user == {}:
+        return redirect(url_for("account"))
+    location = request.form["location"]
+    preference = request.form["preference"]
+    # check if location is supported by api
+    sql = f"INSERT INTO WeatherData (userID, location) VALUES ({user["id"]}, '{location}')"
+    cursor.execute(sql)
+    db.commit()
+    sql = f"INSERT INTO preferences (userID, heat) VALUES ({user["id"]}, '{preference}')"
+    cursor.execute(sql)
+    db.commit()
+
+    user["location"] = location
+    user["preference"] = preference
+    return redirect(url_for("index"))
+
+def sleepPreference():
+    # Check to see if the user has a preference set 
+    # and use the preferene against the actual weather forecast to see 
+    # if they will sleep well tonight and some nights in the future
+    userID = 0
+    global user
+    if user == {}:
+        return redirect(url_for("account"))
+    
+    sql = f"SELECT p.heat, w.location from preferences as p join WeatherData as w on p.userID = w.userID where p.userID ={user["id"]}"
+    
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if not result:
+        return "No user found"
+    preference = result[0]
+    location = result[1]
+    weatherApp.setLocation("forecast", location)
+
+    # create another function to check the temperature versus the users preference
+
+
+
+
+app.run(host="0.0.0.0", port=5000, debug=True)

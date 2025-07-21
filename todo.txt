@@ -1,0 +1,4 @@
+- Sleep preference integration 
+- Appearance
+- Have errors appear on the screen
+- Check if the location requested to the API exists, and if not handle the error correctly.

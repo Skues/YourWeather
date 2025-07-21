@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+<h1>Forecast Page</h1>
+<a href={{url_for("index")}}>Home Page</a>
+{% endblock %}
+
+{% block body %}
+{% if list == [] and indexes == []%}
+<form action ="/forecast" method="POST">
+        <label for="locationInp">Enter location: </label>
+        <input type= "text" id= "locationInp" name= "locationInp" placeholder="e.g. London">
+        <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Submit">
+</form>
+{% else %}
+<h2>Forecast for {{list["city"]["name"]}} - {{list["city"]["country"]}}</h2>
+
+<ul>
+{% for item in list["list"]%}
+    <li>Date/Time: {{item["dt"]}} - Temperature: {{item["main"]["temp"]}}°C, Feels like: {{item["main"]["feels_like"]}}°C, Chance of rain: {{item["pop"]*100}}%</li>
+{% endfor%}
+</ul>
+<h3>Temperature near bedtime for the next 4 days</h3>
+
+<p>INDEXES {{indexes}}</p>
+<ul>
+{% for index in indexes %}
+    <li>Date/time: {{list["list"][index]["dt"]}} - Temperature: {{list["list"][index]["main"]["temp"]}}°C, Feels like: {{list["list"][index]["main"]["feels_like"]}}°C</li>
+{% endfor%}
+</ul>
+<p>Here is the list of forecast {{list["list"][1]["main"]}}</p>
+{% endif %}
+
+{% endblock %}
