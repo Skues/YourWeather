@@ -6,13 +6,13 @@
 {% endblock %}
 
 {% block body %}
-{% if list == [] and indexes == []%}
+
 <form action ="/forecast" method="POST">
         <label for="locationInp">Enter location: </label>
         <input type= "text" id= "locationInp" name= "locationInp" placeholder="e.g. London">
         <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Submit">
 </form>
-{% else %}
+{% if list != [] and indexes != []%}
 <h2>Forecast for {{list["city"]["name"]}} - {{list["city"]["country"]}}</h2>
 
 <ul>

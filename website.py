@@ -44,23 +44,31 @@ def printing():
 
 @app.route("/forecast", methods=["POST", "GET"])
 def forecast():
-    global forecastLocation
-    if forecastLocation != "":
-        weatherApp.setLocation("forecast", forecastLocation)
-        forecastList = weatherApp.list
-        indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
-        return render_template("forecast.html", list=forecastList, indexes = indexes)
-
     location = ""
     forecastList = []
     indexes = []
+    global forecastLocation
     if request.method == "POST":
         location = request.form["locationInp"]
-        print(location)
+        print(location, "AHHHHH")
         weatherApp.setLocation("forecast", location)
         forecastList = weatherApp.list
         indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
         forecastLocation = location
+
+    if user != {}:
+        sql = f"SELECT location from WeatherData where userID = {user['id']}"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            forecastLocation = result[0]
+            print(result)
+    if forecastLocation != "":
+        weatherApp.setLocation("forecast", forecastLocation)
+        forecastList = weatherApp.list
+        indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+    
+    
     # if forecastLocation == "":
     #     return render_template("forecast.html", forecastSet = False)
     # location = request.form["locationInp"]
@@ -180,3 +188,4 @@ def sleepPreference():
 
 
 app.run(host="0.0.0.0", port=5000, debug=True)
+

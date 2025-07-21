@@ -19,16 +19,18 @@ class WeatherObject:
         self.listSet = False
         self.today = {}
         self.list = {}
-        results = self._checkFiles(WEATHER_FILENAME, FORECAST_FILE)
-        if False in results:
-            match results:
-                case True, False:
-                    self._updateFile(FORECAST, FORECAST_FILE)
-                case False, True:
-                    self._updateFile(WEATHER ,WEATHER_FILENAME)
-                case False, False:
-                    self._updateFile(WEATHER, WEATHER_FILENAME)
-                    self._updateFile(FORECAST, FORECAST_FILE)
+        self._updateFile(WEATHER, WEATHER_FILENAME)
+        self._updateFile(FORECAST, FORECAST_FILE)
+        # results = self._checkFiles(WEATHER_FILENAME, FORECAST_FILE)
+        # if False in results:
+        #     match results:
+        #         case True, False:
+        #             self._updateFile(FORECAST, FORECAST_FILE)
+        #         case False, True:
+        #             self._updateFile(WEATHER ,WEATHER_FILENAME)
+        #         case False, False:
+        #             self._updateFile(WEATHER, WEATHER_FILENAME)
+        #             self._updateFile(FORECAST, FORECAST_FILE)
         self._setter(WEATHER, FORECAST)
 
 
