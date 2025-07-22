@@ -6,11 +6,13 @@ from datetime import datetime, timedelta
 BASE_URL = "http://api.openweathermap.org/data/2.5/"
 FORECAST = "forecast?"
 WEATHER = "weather?"
-API_KEY = "b8f950e78f305c48801f6c82d5ed2a45"
+API_KEY = os.environ.get("WEATHER_API_KEY")
 WEATHER_FILENAME = "weathertoday.json"
-FORECAST_FILE = "weatherforecast.json"
+FORECAST_FILE = "weatherforecast.json"  
 WEATHER_LIST = ["dt", "main", "wind"]
 FORECAST_LIST = ["list", "city"]
+
+
 
 class WeatherObject:
     def __init__(self, location = "United Kingdom"):
