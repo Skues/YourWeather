@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+<p>WELCOME TO THE SLEEP LAND</p>
+{% if list != [] and indexes != [] %}
+<p>HELLO</p>
+<ul>
+    {% for index in indexes %}
+    {% if list["list"][index]["main"]["sleep"] %}
+    <li>You will sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["temp"]}}</li>
+    {% else %}
+    <li>You will NOT sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["temp"]}}</li>
+    {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock body %}

@@ -9,7 +9,7 @@ cursor = db.cursor()
 logged = False
 user = {}
 forecastLocation = ""
-PREFERENCES = {"Cold":[-10, 10], "Medium": [11, 18], "Hot": [19, 40]}
+PREFERENCES = {"cold":[-10, 10], "medium": [11, 18], "hot": [19, 40]}
 
 @app.route("/")
 def index():
@@ -163,24 +163,39 @@ def submitWeather():
     user["preference"] = preference
     return redirect(url_for("index"))
 
+@app.route("/sleep")
 def sleepPreference():
     # Check to see if the user has a preference set 
     # and use the preferene against the actual weather forecast to see 
     # if they will sleep well tonight and some nights in the future
-    userID = 0
     global user
     if user == {}:
         return redirect(url_for("account"))
-    
+    print("test1")
     sql = f"SELECT p.heat, w.location from preferences as p join WeatherData as w on p.userID = w.userID where p.userID ={user["id"]}"
     
     cursor.execute(sql)
     result = cursor.fetchone()
     if not result:
+        print("NO user data found")
         return "No user found"
+    print("test2")
     preference = result[0]
     location = result[1]
     weatherApp.setLocation("forecast", location)
+
+    indexes = weatherApp.indexOfTimes(weatherApp.list["list"], 22)
+    tempRange = PREFERENCES[preference.lower()]
+    for i in indexes:
+
+        temp = weatherApp.list["list"][i]["main"]["temp"]
+        if temp in range(tempRange[0], tempRange[1]+1):
+            weatherApp.list["list"][i]["main"]["sleep"] = True
+        else:
+            weatherApp.list["list"][i]["main"]["sleep"] = False
+    print("test3")
+    print(weatherApp.list, indexes)
+    return render_template("sleep.html", list = weatherApp.list, indexes = indexes)
 
     # create another function to check the temperature versus the users preference
 
