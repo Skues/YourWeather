@@ -1,4 +1,7 @@
-- Sleep preference integration 
+- Sleep preference integration [X] ~ Uses the current temperature, further incorporate using "feels like" temperature and then wind/humidity in the future
 - Appearance
-- Have errors appear on the screen
-- Check if the location requested to the API exists, and if not handle the error correctly.
+- Have errors appear on the screen [X]
+- Check if the location requested to the API exists, and if not handle the error correctly. [X]
+- Create a NAVBAR with all the links in the basehtml
+- Be able to change preferences
+- User login either uses email or username, not both

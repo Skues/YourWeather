@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for("static", filename="styles.css")}}">
-    
+    <ul>
+        <li><a href={{url_for("index")}}>Home Page</a></li>
+        <li><a href={{url_for("current")}}>Current Weather</a></li>
+        <li><a href={{url_for("forecast")}}>Forecast</a></li>
+        <li><a href={{url_for("sleepPreference")}}>Sleep Page</a></li>
+    </ul>
     {% block head %}{% endblock %}
 </head>
 <body>

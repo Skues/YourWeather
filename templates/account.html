@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
+{% if error != "" %}
+<p>{{error}}</p>
+{% endif %}
 <h3>Signup form</h3>
 <div class="signupForm">
         <form action="/signup" method="POST">

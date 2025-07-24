@@ -4,12 +4,19 @@ from database import *
 
 app = Flask(__name__)
 weatherApp = WeatherObject()
+print(type(weatherApp))
+print(weatherApp)
+if type(weatherApp) == str:
+    print("ERORR DTIME", weatherApp)
+    # redirect to latest URL with the error or show the error on a seperate page and let the user press a back button which 
+    # would take them back to the last URL they were on.
+    render_template("error.html", error=weatherApp)
 db = connectDatabase()
 cursor = db.cursor()
 logged = False
 user = {}
 forecastLocation = ""
-PREFERENCES = {"cold":[-10, 10], "medium": [11, 18], "hot": [19, 40]}
+PREFERENCES = {"cold":[10, 18], "medium": [18, 21], "hot": [21, 25]}
 
 @app.route("/")
 def index():
@@ -23,7 +30,9 @@ def current():
         cursor.execute(sql)
         result = cursor.fetchone()
         if result != []:
-            weatherApp.setLocation("today", result[2])
+            error = weatherApp.setLocation("today", result[2])
+            if error != "":
+                return render_template("error.html", error=error)
 
         # check if their location is set then set the location and show the current weather for that place using setLocation()
         signedIn = True
@@ -44,6 +53,7 @@ def printing():
 
 @app.route("/forecast", methods=["POST", "GET"])
 def forecast():
+    error = ""
     location = ""
     forecastList = []
     indexes = []
@@ -52,6 +62,10 @@ def forecast():
         location = request.form["locationInp"]
         print(location, "AHHHHH")
         weatherApp.setLocation("forecast", location)
+        print("This is the error:", error)
+        if error != "":
+            return render_template("error.html", error = error)
+        print("Location is set")
         forecastList = weatherApp.list
         indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
         forecastLocation = location
@@ -77,7 +91,7 @@ def forecast():
     # forecastList = weatherApp.list
     # indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
     # print(indexes)
-    return render_template("forecast.html", list = forecastList, indexes = indexes)
+    return render_template("forecast.html", list = forecastList, indexes = indexes, error = error)
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -89,8 +103,9 @@ def signup():
     cursor.execute(sql)
     result = cursor.fetchall()
     if len(result) > 0:
+        error = "Username already exists"
         print("Username already exists")
-        return redirect(url_for("account"))
+        return render_template("account.html", error = error)
     insertValues(db, "users", ["username", "email", "password"], [username, email, password])
     cursor.execute(sql)
     result = cursor.fetchone()
@@ -132,7 +147,8 @@ def login():
 
 @app.route("/account")
 def account():
-    return render_template("account.html")
+    error = ""
+    return render_template("account.html", error=error)
 
 @app.route("/logout")
 def logout():
@@ -188,7 +204,7 @@ def sleepPreference():
     tempRange = PREFERENCES[preference.lower()]
     for i in indexes:
 
-        temp = weatherApp.list["list"][i]["main"]["temp"]
+        temp = weatherApp.list["list"][i]["main"]["feels_like"]
         if temp in range(tempRange[0], tempRange[1]+1):
             weatherApp.list["list"][i]["main"]["sleep"] = True
         else:

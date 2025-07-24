@@ -6,9 +6,9 @@
 <ul>
     {% for index in indexes %}
     {% if list["list"][index]["main"]["sleep"] %}
-    <li>You will sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["temp"]}}</li>
+    <li>You will sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["feels_like"]}}</li>
     {% else %}
-    <li>You will NOT sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["temp"]}}</li>
+    <li>You will NOT sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["feels_like"]}}</li>
     {% endif %}
     {% endfor %}
 </ul>
