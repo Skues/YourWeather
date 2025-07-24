@@ -5,4 +5,4 @@
 - Create a NAVBAR with all the links in the basehtml [X] ~ doesnt look nice but works
 - Be able to change preferences [X]
 - User login either uses email or username, not both [X]
-- Signup only using specific email address prefixes
+- Signup only using specific email address prefixes [X]

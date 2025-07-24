@@ -1,3 +1,57 @@
+nav {
+  background-color: #333;
+  overflow: hidden;
+  padding: 8px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+nav ul li a {
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 12px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+}
+
+nav ul li a:hover {
+  background-color: #555;
+  color: #f2f2f2;
+}
+
+/* Optional: Add a class for the currently active page link */
+.active-link {
+  background-color: #04AA6D;
+  color: white !important;
+}
+
+@media screen and (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  nav ul li a {
+    width: 100%;
+    text-align: center;
+    padding: 10px 8px;
+  }
+}
 body {
-  background-color: wheat;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+  color: #333;
 }/*# sourceMappingURL=styles.css.map */

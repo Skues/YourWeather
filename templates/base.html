@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for("static", filename="styles.css")}}">
-    <ul>
-        <li><a href={{url_for("index")}}>Home Page</a></li>
-        <li><a href={{url_for("current")}}>Current Weather</a></li>
-        <li><a href={{url_for("forecast")}}>Forecast</a></li>
-        <li><a href={{url_for("sleepPreference")}}>Sleep Page</a></li>
-        <li><a href={{url_for("account")}}>Account</a></li>
+    <nav>
+        <ul>
+            <li><a href={{url_for("index")}} {% if request.endpoint == "index" %}class="active-link"{% endif %}>Home Page</a></li>
+            <li><a href={{url_for("current")}} {% if request.endpoint == 'current' %}class="active-link"{% endif %}>Current Weather</a></li>
+            <li><a href={{url_for("forecast")}} {% if request.endpoint == 'forecast' %}class="active-link"{% endif %}>Forecast</a></li>
+            <li><a href={{url_for("sleepPreference")}} {% if request.endpoint == 'sleepPreference' %}class="active-link"{% endif %}>Sleep Page</a></li>
+            <li><a href={{url_for("account")}} {% if request.endpoint == 'account' %}class="active-link"{% endif %}>Account</a></li>
 
-    </ul>
+        </ul>
+    </nav>
     {% block head %}{% endblock %}
 </head>
 <body>

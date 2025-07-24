@@ -1,0 +1,59 @@
+// Styles for the navigation bar
+nav { // Targeting the <nav> if you wrap your <ul> in it, otherwise target the ul directly
+  background-color: $navbar-bg-color;
+  overflow: hidden; // Clear floats
+  padding: $spacing-unit; // Add some padding around the whole nav
+}
+
+nav ul {
+  list-style-type: none; // Remove bullet points
+  margin: 0;
+  padding: 0;
+  display: flex; // Use flexbox for horizontal layout
+  justify-content: center; // Center the links horizontally
+  flex-wrap: wrap; // Allow items to wrap on smaller screens if they don't fit
+}
+
+// nav ul li {
+//   // Styles for each list item
+//   // No specific styles needed here typically when using flexbox on the ul
+// }
+
+nav ul li a {
+  display: block; // Make the whole link area clickable
+  color: $navbar-text-color;
+  text-align: center;
+  padding: $spacing-unit * 1.5 $spacing-unit * 2; // Top/bottom, Left/right padding
+  text-decoration: none; // Remove underline from links
+  transition: background-color 0.3s ease; // Smooth transition for hover effect
+  border-radius: 4px; // Slightly rounded corners for links
+  font-size: $base-font-size;
+  font-family: $font-stack;
+  white-space: nowrap; // Prevent links from breaking onto multiple lines
+}
+
+nav ul li a:hover {
+  background-color: $navbar-hover-color;
+  color: $navbar-text-color; // Ensure text color remains consistent or changes as desired
+}
+
+/* Optional: Add a class for the currently active page link */
+.active-link {
+  background-color: $navbar-active-color;
+  color: white !important; // !important might be needed if hover is too strong
+}
+
+
+// Media Queries for basic responsiveness
+@media screen and (max-width: $breakpoint-mobile) {
+  nav ul {
+    flex-direction: column; // Stack items vertically on small screens
+    align-items: center; // Center items when stacked
+  }
+
+  nav ul li a {
+    width: 100%; // Make links take full width
+    text-align: center; // Center text within the link
+    padding: $spacing-unit * 1.25 $spacing-unit; // Adjust padding for stacked links
+  }
+}

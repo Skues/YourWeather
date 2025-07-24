@@ -1,3 +1,14 @@
+// Import your variables first
+@import 'scss/variables';
+
+// Then import your navbar styles
+@import 'scss/navbar';
+
+// You can add global styles or other component imports here later
 body {
-    background-color: wheat;
+  margin: 0; // Remove default body margin
+  font-family: $font-stack;
+  line-height: 1.6;
+  background-color: #f4f4f4; // A light background for the page
+  color: #333;
 }
