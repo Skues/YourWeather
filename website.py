@@ -1,11 +1,9 @@
 from weatherapp import WeatherObject
 from flask import Flask, render_template, request, redirect, url_for
 from database import *
-
+import bcrypt
 app = Flask(__name__)
 weatherApp = WeatherObject()
-print(type(weatherApp))
-print(weatherApp)
 if type(weatherApp) == str:
     print("ERORR DTIME", weatherApp)
     # redirect to latest URL with the error or show the error on a seperate page and let the user press a back button which 
@@ -61,12 +59,9 @@ def forecast():
     global forecastLocation
     if request.method == "POST":
         location = request.form["locationInp"]
-        print(location, "AHHHHH")
         weatherApp.setLocation("forecast", location)
-        print("This is the error:", error)
         if error != "":
             return render_template("error.html", error = error)
-        print("Location is set")
         forecastList = weatherApp.list
         indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
         forecastLocation = location
@@ -77,7 +72,6 @@ def forecast():
         result = cursor.fetchone()
         if result:
             forecastLocation = result[0]
-            print(result)
     else:
         forecastLocation = weatherApp.location
         
@@ -113,7 +107,8 @@ def signup():
         error = "Username already exists"
         print("Username already exists")
         return render_template("account.html", error = error)
-    insertValues(db, "users", ["username", "email", "password"], [username, email, password])
+    hashedPassword = hashPassword(password)
+    insertValues(db, "users", ["username", "email", "password"], [username, email, hashedPassword])
     cursor.execute(sql)
     result = cursor.fetchone()
     user = {"id": result[3], "username": result[0], "email": result[1]}
@@ -128,9 +123,7 @@ def login():
     username_email = request.form["username_email"]
     password = request.form["login_password"]
     if "@" in username_email:
-        print("is an email")
         index = username_email.index("@")
-        print(username_email[index:])
         if username_email[index:] in EMAIL_PREFIX:
             sql = f"SELECT * FROM users WHERE email = '{username_email}'"
         else:
@@ -141,16 +134,13 @@ def login():
     cursor.execute(sql)
     result = cursor.fetchall()
     if len(result) == 1:
-        print([result])
-        dbPassword = result[0][2]
+        dbPassword = hashPassword(result[0][2])
         if password == dbPassword:
-            print("password matches")
             id = result[0][3]
             username = result[0][0]
             email = result[0][1]
             user = {"id": id, "username": username, "email": email}
         else:
-            print("password did not match: ", dbPassword, password)
             error = "Password did not match."
     else:
         error = "Account not found in database."
@@ -158,7 +148,6 @@ def login():
     if error != "":
         return render_template("account.html", error = error)
     else:
-        print("going to index")
         return redirect(url_for("account"))
 
 
@@ -167,11 +156,7 @@ def account():
     
     error = ""
     loggedIn = False
-    print("we're actually here")
-    print(user)
-
     if user != {}:
-        print("we're here")
         loggedIn = True
         sql = f"SELECT preferences.heat, WeatherData.location from preferences join WeatherData on preferences.userID = WeatherData.userID where preferences.userID ={user["id"]}"
         cursor.execute(sql)
@@ -219,15 +204,12 @@ def sleepPreference():
     global user
     if user == {}:
         return redirect(url_for("account"))
-    print("test1")
     sql = f"SELECT p.heat, w.location from preferences as p join WeatherData as w on p.userID = w.userID where p.userID ={user["id"]}"
     
     cursor.execute(sql)
     result = cursor.fetchone()
     if not result:
-        print("NO user data found")
         return "No user found"
-    print("test2")
     preference = result[0]
     location = result[1]
     weatherApp.setLocation("forecast", location)
@@ -241,8 +223,6 @@ def sleepPreference():
             weatherApp.list["list"][i]["main"]["sleep"] = True
         else:
             weatherApp.list["list"][i]["main"]["sleep"] = False
-    print("test3")
-    print(weatherApp.list, indexes)
     return render_template("sleep.html", list = weatherApp.list, indexes = indexes)
 
     # create another function to check the temperature versus the users preference
@@ -250,13 +230,10 @@ def sleepPreference():
 @app.route("/changePreferences", methods=["POST", "GET"])
 def changePreferences():
     
-    print("Made it to changePrefeernces")
     if request.method == "POST":
         newLocation = request.form["newLocation"]
         newHeat = request.form["heatPreference"]
-        print("newLocation=", newLocation,"\nnewHeat=", newHeat)
         if newLocation != "":
-            print("Setting ")
             # set it
             sql = f"UPDATE WeatherData SET location='{newLocation}' WHERE userID={user["id"]}"
             cursor.execute(sql)
@@ -271,6 +248,11 @@ def changePreferences():
     else:
         return render_template("changePreferences.html")
 
+
+def hashPassword(password: str) -> str:
+    password_bytes = password.encode('utf-8')
+    hashedPassword = bcrypt.hashpw(password_bytes, bcrypt.gensalt(12))
+    return hashedPassword.decode('utf-8')
 
 app.run(host="0.0.0.0", port=5000, debug=True)
 

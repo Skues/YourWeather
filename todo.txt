@@ -6,3 +6,4 @@
 - Be able to change preferences [X]
 - User login either uses email or username, not both [X]
 - Signup only using specific email address prefixes [X]
+- Hashing passwords
