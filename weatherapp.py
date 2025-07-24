@@ -111,6 +111,7 @@ class WeatherObject:
 
     def _updateFile(self, addition, filename):
         url = BASE_URL + addition + "appid=" + API_KEY + f"&q={self.location}"
+        print(f"LOCATION WHEN SETTING {addition} is {self.location}")
         r = requests.get(url).json()
         if str(r["cod"]) != "200":
             print("GOT AN ERROR WHEN UPDATING A FILE\n", r["message"])

@@ -2,6 +2,7 @@
 - Appearance
 - Have errors appear on the screen [X]
 - Check if the location requested to the API exists, and if not handle the error correctly. [X]
-- Create a NAVBAR with all the links in the basehtml
-- Be able to change preferences
-- User login either uses email or username, not both
+- Create a NAVBAR with all the links in the basehtml [X] ~ doesnt look nice but works
+- Be able to change preferences [X]
+- User login either uses email or username, not both [X]
+- Signup only using specific email address prefixes

@@ -3,6 +3,7 @@
 {% if error != "" %}
 <p>{{error}}</p>
 {% endif %}
+{% if not loggedIn %}
 <h3>Signup form</h3>
 <div class="signupForm">
         <form action="/signup" method="POST">
@@ -19,14 +20,21 @@
 <h3>Login form</h3>
 <div class="loginForm">
     <form action="/login" method="POST">
-        <label for="username">Enter username: </label>
-        <input type="text" id="username" name = "login_username"><br>
-        <label for="email">Enter email: </label>
-        <input type="text" id="email" name = "login_email"><br>
+        <label for="username_email">Enter username or email address: </label>
+        <input type="text" id="username_email" name = "username_email"><br>
         <label for="password">Enter password: </label>
         <input type="text" id="password" name = "login_password">
         <input type= "submit" value = "Login">
     </form>
 </div>
+{% else %}
+<a href={{url_for("logout")}}>Logout</a>
+<h3>Location Preference:</h3>
+<p>{{locationPreference}}</p>
+
+<h3>Heat Preference:</h3>
+<p>{{heatPreference}}</p>
+<a href={{url_for("changePreferences")}}>Edit</a>
+{% endif %}
 
 {% endblock %}

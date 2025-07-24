@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="sleepPreferenceForm">
+        <form action="/changePreferences" method="POST">
+            <label for="location">Enter location to change to: </label>
+            <input type="text" id="newLocation" name = "newLocation"><br>
+            <label for="heatPreference">Enter new heatPreference: </label>
+            <input type="text" id="heatPreference" name = "heatPreference"><br>
+            <input type= "submit" value = "Submit">
+        </form>
+</div><br><br>
+{%endblock body %}

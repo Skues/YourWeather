@@ -17,6 +17,7 @@ logged = False
 user = {}
 forecastLocation = ""
 PREFERENCES = {"cold":[10, 18], "medium": [18, 21], "hot": [21, 25]}
+EMAIL_PREFIX = ["@gmail.com", "@outlook.com", "@btinternet.com", "@bootyman.com"]
 
 @app.route("/")
 def index():
@@ -70,17 +71,19 @@ def forecast():
         indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
         forecastLocation = location
 
-    if user != {}:
+    elif user != {}:
         sql = f"SELECT location from WeatherData where userID = {user['id']}"
         cursor.execute(sql)
         result = cursor.fetchone()
         if result:
             forecastLocation = result[0]
             print(result)
-    if forecastLocation != "":
-        weatherApp.setLocation("forecast", forecastLocation)
-        forecastList = weatherApp.list
-        indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+    else:
+        forecastLocation = weatherApp.location
+        
+    weatherApp.setLocation("forecast", forecastLocation)
+    forecastList = weatherApp.list
+    indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
     
     
     # if forecastLocation == "":
@@ -98,6 +101,10 @@ def signup():
     global user
     username = request.form["signup_username"]
     email = request.form["signup_email"]
+    index = email.index("@")
+    if email[index:] not in EMAIL_PREFIX:
+        error = "Invalid email type submitted."
+        return render_template("account.html", error=error)
     password = request.form["signup_password"]
     sql = f"SELECT * FROM users WHERE username = '{username}'"
     cursor.execute(sql)
@@ -118,9 +125,19 @@ def signup():
 def login():
     global user
     error = ""
-    username = request.form["login_username"]
+    username_email = request.form["username_email"]
     password = request.form["login_password"]
-    sql = f"SELECT * FROM users WHERE username = '{username}'"
+    if "@" in username_email:
+        print("is an email")
+        index = username_email.index("@")
+        print(username_email[index:])
+        if username_email[index:] in EMAIL_PREFIX:
+            sql = f"SELECT * FROM users WHERE email = '{username_email}'"
+        else:
+            error = "Not a valid email address"
+            return render_template("account.html", error=error)
+    else:
+        sql = f"SELECT * FROM users WHERE username = '{username_email}'"
     cursor.execute(sql)
     result = cursor.fetchall()
     if len(result) == 1:
@@ -142,12 +159,27 @@ def login():
         return render_template("account.html", error = error)
     else:
         print("going to index")
-        return redirect(url_for("index"))
+        return redirect(url_for("account"))
 
 
 @app.route("/account")
 def account():
+    
     error = ""
+    loggedIn = False
+    print("we're actually here")
+    print(user)
+
+    if user != {}:
+        print("we're here")
+        loggedIn = True
+        sql = f"SELECT preferences.heat, WeatherData.location from preferences join WeatherData on preferences.userID = WeatherData.userID where preferences.userID ={user["id"]}"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        locationPreference, heatPreference = result[1], result[0]
+        
+        return render_template("account.html", loggedIn=loggedIn, locationPreference=locationPreference, heatPreference=heatPreference, error=error)
+
     return render_template("account.html", error=error)
 
 @app.route("/logout")
@@ -215,7 +247,29 @@ def sleepPreference():
 
     # create another function to check the temperature versus the users preference
 
+@app.route("/changePreferences", methods=["POST", "GET"])
+def changePreferences():
+    
+    print("Made it to changePrefeernces")
+    if request.method == "POST":
+        newLocation = request.form["newLocation"]
+        newHeat = request.form["heatPreference"]
+        print("newLocation=", newLocation,"\nnewHeat=", newHeat)
+        if newLocation != "":
+            print("Setting ")
+            # set it
+            sql = f"UPDATE WeatherData SET location='{newLocation}' WHERE userID={user["id"]}"
+            cursor.execute(sql)
 
+        if newHeat != "":
+            # set it
+            sql = f"UPDATE preferences set heat='{newHeat}' WHERE userID={user["id"]}"
+            cursor.execute(sql)
+
+        db.commit()
+        return redirect(url_for("account"))
+    else:
+        return render_template("changePreferences.html")
 
 
 app.run(host="0.0.0.0", port=5000, debug=True)
