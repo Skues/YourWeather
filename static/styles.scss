@@ -12,3 +12,56 @@ body {
   background-color: #f4f4f4; // A light background for the page
   color: #333;
 }
+
+/* SCSS for Index Page Styling */
+
+// Define some variables for colors and fonts
+$primary-color: #3498db; // A nice blue for headings
+$text-color: #333;       // Dark gray for paragraph text
+$background-color: #f8f8f8; // Light background
+$font-stack: 'Inter', sans-serif; // Using Inter as per instructions, with a fallback
+
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: $primary-color;
+  font-size: 2.8em;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid lighten($primary-color, 20%);
+  border-radius: 4px; // Rounded corners for the border
+}
+
+p {
+  font-size: 1.1em;
+  line-height: 1.8;
+  margin-bottom: 15px;
+  text-align: justify; // Justify text for a cleaner look
+  color: $text-color;
+
+  &:last-child {
+    margin-bottom: 0; // No bottom margin for the last paragraph
+  }
+}
+
+// Basic responsive adjustments
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2em;
+  }
+  p {
+    font-size: 1em;
+  }
+  .container {
+    padding: 15px;
+  }
+}

@@ -1,15 +1,5 @@
 {% extends "base.html" %}
 
-{% block head %}
-<a href={{url_for("index")}}>Home Page</a>
-{% if user == {}%}
-<a href={{url_for("account")}}>Signup / Login</a>
-{% else %}
-<a href={{url_for("logout")}}>Logout</a>
-{% endif %}
-
-{% endblock %}
-
 
 {% block body %}
 
@@ -19,17 +9,22 @@
     {% if user["location"] != ""%}
     <p>{{user["location"]}}</p>
     {% endif %}
-    <h1>This is the Weather page</h1>
-
-    <p>Temperature is currently {{temperature}} degrees and feels like {{feelslike}} || {{dt}} IN {{location}}</p>
-
-    <form action ="/forecast" method="POST">
+    
+    <h1>Current Weather</h1>
+    <form action ="/current" method="POST">
         <label for="locationInp">Enter location: </label>
         <input type= "text" id= "locationInp" name= "locationInp" placeholder="e.g. London">
-        <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Submit">
+        <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Search">
     </form>
+    <h3>{{dt}} IN {{today["name"]}}{% if today["name"] != location %}, {{location}}{% endif %}</h3>
 
-    <a href="/forecast/">Forecast</a>
+    <p>Temperature is currently {{today["main"]["temp"]}}°C degrees and feels like {{today["main"]["feels_like"]}}°C</p>
+
+    <p>High: {{today["main"]["temp_max"]}} || Low: {{today["main"]["temp_min"]}}</p>
+    <p>Humidity: {{today["main"]["humidity"]}}%</p>
+    <p>Wind: {{today["wind"]["speed"]}} m/s (Gusts up to 6.81m/s)</p>
+
 
     <p>{{today}}</p>
+    
 {% endblock %}

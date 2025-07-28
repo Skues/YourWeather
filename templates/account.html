@@ -23,18 +23,25 @@
         <label for="username_email">Enter username or email address: </label>
         <input type="text" id="username_email" name = "username_email"><br>
         <label for="password">Enter password: </label>
-        <input type="text" id="password" name = "login_password">
+        <input type="text" id="login_password" name = "login_password">
         <input type= "submit" value = "Login">
     </form>
 </div>
 {% else %}
 <a href={{url_for("logout")}}>Logout</a>
+<br>
+<div class="container">
 <h3>Location Preference:</h3>
 <p>{{locationPreference}}</p>
+</div>
+<br>
 
+<div class="container">
 <h3>Heat Preference:</h3>
 <p>{{heatPreference}}</p>
 <a href={{url_for("changePreferences")}}>Edit</a>
+</div>
+
 {% endif %}
 
 {% endblock %}

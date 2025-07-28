@@ -9,7 +9,7 @@ WEATHER = "weather?"
 API_KEY = os.environ.get("WEATHER_API_KEY")
 WEATHER_FILENAME = "weathertoday.json"
 FORECAST_FILENAME = "weatherforecast.json"  
-WEATHER_LIST = ["dt", "main", "wind"]
+WEATHER_LIST = ["dt", "main", "wind", "name"]
 FORECAST_LIST = ["list", "city"]
 
 
@@ -143,6 +143,8 @@ class WeatherObject:
             return data
 
     def kelvinToCelcius(self, kelvin):
+        if kelvin < 100:
+            return kelvin
         return int(round(kelvin-273.15, 0))
 
     def unixToUTC(self, unix):
@@ -181,15 +183,16 @@ class WeatherObject:
 
             addition = FORECAST
             filename = FORECAST_FILENAME
+            self.listSet = False
         elif addition == "today":
             addition = WEATHER
             filename = WEATHER_FILENAME
+            self.todaySet = False
         self.location = location
         error = self._updateFile(addition, filename)
         print("Check error within setLocation: ", error)
         if error != "":
             return error
-        self.listSet = False
         self._setter(addition)
         self.listTemperatureFix(self.list["list"])
         self.listTimeFix(self.list["list"])
@@ -216,6 +219,18 @@ class WeatherObject:
             return data["message"]
         else:
             return ""
+        
+    def min_maxTemperatures(self, list):
+        list[0]["main"]["temp_max"]
+        list[0]["main"]["temp_min"]
+        grouped= {}
+        for item in list:
+            if item["dt_txt"].split()[0] in grouped:
+                grouped[item["dt_txt"].split()[0]].append(item)
+            else:
+                grouped[item["dt_txt"].split()[0]] = [item]
+        
+            item["dt_txt"].split()[0]
 
     # def __str__(self):
     #     return f"---------------\ndt: {self.unixToUTC(self.today["dt"])}\nTemp: {self.kelvinToCelcius(self.today["temp"])}\nFeels like: {self.kelvinToCelcius(self.today["feels_like"])}\n---------------"

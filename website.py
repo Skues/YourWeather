@@ -21,34 +21,40 @@ EMAIL_PREFIX = ["@gmail.com", "@outlook.com", "@btinternet.com", "@bootyman.com"
 def index():
     return render_template("index.html")
 
-@app.route("/current")
+@app.route("/current", methods = ["POST", "GET"])
 def current():
     signedIn = False
-    if user != {}:
-        sql = f"SELECT * from WeatherData WHERE userID ={user["id"]}"
-        cursor.execute(sql)
-        result = cursor.fetchone()
-        if result != []:
-            error = weatherApp.setLocation("today", result[2])
-            if error != "":
-                return render_template("error.html", error=error)
+    if request.method == "POST":
+        location = request.form["locationInp"]
+        error = weatherApp.setLocation("today", location)
+        if error != "":
+            return render_template("error.html", error=error)
+    else:
+        if user != {}:
+            sql = f"SELECT * from WeatherData WHERE userID ={user["id"]}"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            if result != []:
+                error = weatherApp.setLocation("today", result[2])
+                if error != "":
+                    return render_template("error.html", error=error)
 
-        # check if their location is set then set the location and show the current weather for that place using setLocation()
-        signedIn = True
-        # Search for users saved location here
+            # check if their location is set then set the location and show the current weather for that place using setLocation()
+            signedIn = True
+            # Search for users saved location here
+    temperatures = ["temp", "feels_like", "temp_min", "temp_max"]
+    for key, value in weatherApp.today["main"].items():
+        if key in temperatures:
+            weatherApp.today["main"][key] = weatherApp.kelvinToCelcius(value)
 
     weatherApp._checkDate(weatherApp.today["dt"])
-    temperature = weatherApp.kelvinToCelcius(weatherApp.today["main"]["temp"])
-    feelslike = weatherApp.kelvinToCelcius(weatherApp.today["main"]["feels_like"])
+
     location = weatherApp.location
     
     today= weatherApp.today
     dt = weatherApp.unixToUTC(today["dt"])
-    return render_template("weather.html", today=today, temperature=temperature, feelslike=feelslike, signedIn = signedIn, user=user, dt=dt, location=location)
+    return render_template("weather.html", today=today, signedIn = signedIn, user=user, dt=dt, location=location)
 
-@app.route("/testing")
-def printing():
-    return render_template("index.html")
 
 @app.route("/forecast", methods=["POST", "GET"])
 def forecast():
@@ -122,6 +128,7 @@ def login():
     error = ""
     username_email = request.form["username_email"]
     password = request.form["login_password"]
+    print("This is your password", hashPassword(password))
     if "@" in username_email:
         index = username_email.index("@")
         if username_email[index:] in EMAIL_PREFIX:
@@ -134,8 +141,9 @@ def login():
     cursor.execute(sql)
     result = cursor.fetchall()
     if len(result) == 1:
-        dbPassword = hashPassword(result[0][2])
-        if password == dbPassword:
+        dbPassword = result[0][2]
+        # if password == dbPassword:
+        if bcrypt.checkpw(password.encode('utf-8'), dbPassword.encode('utf-8')):
             id = result[0][3]
             username = result[0][0]
             email = result[0][1]
@@ -188,7 +196,7 @@ def submitWeather():
     sql = f"INSERT INTO WeatherData (userID, location) VALUES ({user["id"]}, '{location}')"
     cursor.execute(sql)
     db.commit()
-    sql = f"INSERT INTO preferences (userID, heat) VALUES ({user["id"]}, '{preference}')"
+    sql = f"INSERT INTO preferences (userID, heat) VALUES ({user["id"]}, '{preference.title()}')"
     cursor.execute(sql)
     db.commit()
 
@@ -203,7 +211,7 @@ def sleepPreference():
     # if they will sleep well tonight and some nights in the future
     global user
     if user == {}:
-        return redirect(url_for("account"))
+        return render_template("account.html", error = "Must have an account to see how you will sleep.")
     sql = f"SELECT p.heat, w.location from preferences as p join WeatherData as w on p.userID = w.userID where p.userID ={user["id"]}"
     
     cursor.execute(sql)
