@@ -1,4 +1,5 @@
 import mysql.connector
+import os
 
 # db = mysql.connector.connect(
 #     host="localhost",
@@ -11,9 +12,9 @@ def connectDatabase():
     try:
         db = mysql.connector.connect(
         host="localhost",
-        user="buzio",
-        password="password",
-        database="WeatherWebsite"
+        user=os.environ.get("MYSQL_USER"),
+        password=os.environ.get("MYSQL_PASSWORD"),
+        database=os.environ.get("MYSQL_DB")
         )
         return db
     except Exception as e:
