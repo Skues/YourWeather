@@ -11,7 +11,7 @@ import os
 def connectDatabase():
     try:
         db = mysql.connector.connect(
-        host="localhost",
+        host="db",
         user=os.environ.get("MYSQL_USER"),
         password=os.environ.get("MYSQL_PASSWORD"),
         database=os.environ.get("MYSQL_DB")
