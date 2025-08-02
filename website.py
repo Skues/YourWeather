@@ -34,7 +34,7 @@ def current():
             sql = f"SELECT * from WeatherData WHERE userID ={user["id"]}"
             cursor.execute(sql)
             result = cursor.fetchone()
-            if result != []:
+            if result: 
                 error = weatherApp.setLocation("today", result[2])
                 if error != "":
                     return render_template("error.html", error=error)
@@ -69,7 +69,7 @@ def forecast():
         if error != "":
             return render_template("error.html", error = error)
         forecastList = weatherApp.list
-        indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+        indexes = weatherApp.indexOfTimes(forecastList["list"], 21)
         forecastLocation = location
 
     elif user != {}:
@@ -83,7 +83,7 @@ def forecast():
         
     weatherApp.setLocation("forecast", forecastLocation)
     forecastList = weatherApp.list
-    indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+    indexes = weatherApp.indexOfTimes(forecastList["list"], 21)
     
     
     # if forecastLocation == "":
@@ -92,7 +92,7 @@ def forecast():
     # print(location)
     # weatherApp.setLocation("forecast", location)
     # forecastList = weatherApp.list
-    # indexes = weatherApp.indexOfTimes(forecastList["list"], 22)
+    # indexes = weatherApp.indexOfTimes(forecastList["list"], 21)
     # print(indexes)
     return render_template("forecast.html", list = forecastList, indexes = indexes, error = error)
 
@@ -222,7 +222,7 @@ def sleepPreference():
     location = result[1]
     weatherApp.setLocation("forecast", location)
 
-    indexes = weatherApp.indexOfTimes(weatherApp.list["list"], 22)
+    indexes = weatherApp.indexOfTimes(weatherApp.list["list"], 21)
     tempRange = PREFERENCES[preference.lower()]
     for i in indexes:
 

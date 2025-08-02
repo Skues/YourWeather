@@ -18,9 +18,7 @@ def connectDatabase():
         )
         return db
     except Exception as e:
-        print(e)
-        return e
-    
+        raise(e)
 def insertValues(db, table, columns, values):
     columnText = ""
     valueText = ""
