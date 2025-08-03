@@ -9,21 +9,25 @@
     {% if user["location"] != ""%}
     <p>{{user["location"]}}</p>
     {% endif %}
-    
+    <div class = "weather-container">
     <h1>Current Weather</h1>
+ 
+    <div class = "search-box">
     <form action ="/current" method="POST">
-        <label for="locationInp">Enter location: </label>
-        <input type= "text" id= "locationInp" name= "locationInp" placeholder="e.g. London">
+        <input type= "text" id= "locationInp" name= "locationInp" placeholder="Enter a location, e.g. London">
         <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Search">
     </form>
-    <h3>{{dt}} IN {{today["name"]}}{% if today["name"] != location %}, {{location}}{% endif %}</h3>
+    </div>
+<div class = weather-info">
+    <strong>{{dt}} IN {{today["name"]}}{% if today["name"] != location %}, {{location}}{% endif %}</strong>
 
     <p>Temperature is currently {{today["main"]["temp"]}}°C degrees and feels like {{today["main"]["feels_like"]}}°C</p>
 
     <p>High: {{today["main"]["temp_max"]}} || Low: {{today["main"]["temp_min"]}}</p>
     <p>Humidity: {{today["main"]["humidity"]}}%</p>
     <p>Wind: {{today["wind"]["speed"]}} m/s (Gusts up to 6.81m/s)</p>
-
+</div>
+   </div>
 
     <p>{{today}}</p>
     
