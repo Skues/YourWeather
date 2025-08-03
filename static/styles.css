@@ -49,12 +49,59 @@ nav ul li a:hover {
   }
 }
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  background-color: #f4f4f4;
-  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f0f4f8;
+	margin: 0;
+	padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
+.weather-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+.search-box {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box input {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      flex: 1;
+    }
+
+    .search-box button {
+      padding: 0.5rem 1rem;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .search-box button:hover {
+      background-color: #1976d2;
+    }
+
+    .weather-info {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .weather-info strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
 
 /* SCSS for Index Page Styling */
 .container {
