@@ -73,14 +73,14 @@ body {
       margin-bottom: 1.5rem;
     }
 
-    .search-box input {
+    .search-box input[type="text"] {
       padding: 0.5rem;
       border-radius: 6px;
       border: 1px solid #ccc;
       flex: 1;
     }
 
-    .search-box button {
+    .search-box input[type="submit"] {
       padding: 0.5rem 1rem;
       background-color: #2196f3;
       color: white;
@@ -89,7 +89,7 @@ body {
       cursor: pointer;
     }
 
-    .search-box button:hover {
+    .search-box input[type="submit"]:hover {
       background-color: #1976d2;
     }
 
