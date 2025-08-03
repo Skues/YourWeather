@@ -23,6 +23,8 @@ $font-stack: 'Inter', sans-serif; // Using Inter as per instructions, with a fal
 
 
 .container {
+  display: flex;
+  gap: 16px;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
