@@ -58,6 +58,8 @@ body {
 
 /* SCSS for Index Page Styling */
 .container {
+  display: flex;
+  gap: 16px;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
