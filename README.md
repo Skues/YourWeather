@@ -1,6 +1,6 @@
-# Your Weather
+# 🌤️ Your Weather
 
-Your Weather is a simple yet powerful weather web application built using Python's Flask. 
+**Your Weather** is a simple yet powerful weather web application built using Python's Flask. 
 It integrates with MySQL for user data storage and utilises HTML, CSS/SCSS for the frontend.
 The app fetches real-time weather and forecasts using the OpenWeather API and is deployed using
 Docker.
@@ -14,11 +14,11 @@ Docker.
 * Deployable using Docker + Docker Compose.
 
 ## Stack
-* Backend: Python, Flask
-* Frontend, HTML, CSS/SCSS
-* Database: MySQL
-* API: OpenWeather API
-* Deployment: Docker
+* **Backend**: Python, Flask
+* **Frontend**: HTML, CSS/SCSS
+* **Database**: MySQL
+* **API**: OpenWeather API
+* **Deployment**: Docker
 
 ## Installation
 ...
