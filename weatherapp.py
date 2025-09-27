@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 BASE_URL = "http://api.openweathermap.org/data/2.5/"
 FORECAST = "forecast?"
 WEATHER = "weather?"
-API_KEY = os.environ.get("WEATHER_API_KEY")
+API_KEY = os.environ.get("OPENWEATHER_API_KEY")
 WEATHER_FILENAME = "weathertoday.json"
 FORECAST_FILENAME = "weatherforecast.json"  
 WEATHER_LIST = ["dt", "main", "wind", "name"]

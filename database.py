@@ -8,57 +8,65 @@ import os
 #     database="WeatherWebsite"
 # )
 
-def connectDatabase():
-    try:
-        db = mysql.connector.connect(
-        host="db",
-        user=os.environ.get("MYSQL_USER"),
-        password=os.environ.get("MYSQL_PASSWORD"),
-        database=os.environ.get("MYSQL_DB")
-        )
-        return db
-    except Exception as e:
-        raise(e)
-def insertValues(db, table, columns, values):
-    columnText = ""
-    valueText = ""
-    columnText += f"{columns[0]}"
-    valueText += f"'{values[0]}'"
-    if len(columns) != len(values):
-        return "Length of columns and values not equal."
-    for i in  range(1, len(columns)):
-        columnText += f", {columns[i]}"
-        valueText += f", '{values[i]}'"
-    print(columnText)
-    print(valueText)
-    sql = f"INSERT INTO {table} ({columnText}) VALUES ({valueText})"
-    print(sql)
-    db.cursor().execute(sql)
-    db.commit()
-    
-def selectWhere(db, table, column, value):
-    sql = f"SELECT FROM {table} WHERE {column} = '{value}'"
-    db.cursor.execute(sql)
-    db.commit()
 
-def showTable(cursor, table):
-    sql = f"SELECT * FROM {table}"
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    print(result)
+class databaseConnection:
+    def __init__(self):
+        self.db = self.connectDatabase()
 
-    
-def deleteID(db, table, id):
-    sql = f"DELETE FROM {table} WHERE id = {id}"
-    db.cursor().execute(sql)
-    db.commit()
-    return False
+    def connectDatabase(self):
+        try:
+            db = mysql.connector.connect(
+                host="localhost",
+                user=os.environ.get("MYSQL_USER"),
+                password=os.environ.get("MYSQL_PASSWORD"),
+                database=os.environ.get("MYSQL_DB"),
+            )
+            return db
+        except Exception as e:
+            raise (e)
+            exit
 
-def deleteAll(db, table):
-    sql = f"DELETE FROM {table}"
-    db.cursor().execute(sql)
-    db.commit()
-    return False
+    def insertValues(self, table, columns, values):
+        columnText = ""
+        valueText = ""
+        columnText += f"{columns[0]}"
+        valueText += f"'{values[0]}'"
+        if len(columns) != len(values):
+            return "Length of columns and values not equal."
+        for i in range(1, len(columns)):
+            columnText += f", {columns[i]}"
+            valueText += f", '{values[i]}'"
+        print(columnText)
+        print(valueText)
+        sql = f"INSERT INTO {table} ({columnText}) VALUES ({valueText})"
+        print(sql)
+        self.db.cursor().execute(sql)
+        self.db.commit()
+
+    def selectWhere(self, table, column, value):
+        sql = f"SELECT FROM {table} WHERE {column} = '{value}'"
+        self.db.cursor().execute(sql)
+        self.db.commit()
+
+    def showTable(self, cursor, table):
+        sql = f"SELECT * FROM {table}"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        print(result)
+
+    def deleteID(self, table, id):
+        sql = f"DELETE FROM {table} WHERE id = {id}"
+        self.db.cursor().execute(sql)
+        self.db.commit()
+        return False
+
+    def deleteAll(self, table):
+        sql = f"DELETE FROM {table}"
+        self.db.cursor().execute(sql)
+        self.db.commit()
+        return False
+
+
 # mycursor = db.cursor()
 # # mycursor.execute("ALTER TABLE users add column id INT auto_increment primary key")
-# print(db)   
+# print(db)

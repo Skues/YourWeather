@@ -4,13 +4,43 @@
 {% if list != [] and indexes != [] %}
 <p>HELLO</p>
 <ul>
-    {% for index in indexes %}
-    {% if list["list"][index]["main"]["sleep"] %}
-    <li>You will sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["feels_like"]}}</li>
-    {% else %}
-    <li>You will NOT sleep well on the {{list["list"][index]["dt_txt"]}} as the temperature will be: {{list["list"][index]["main"]["feels_like"]}}</li>
-    {% endif %}
-    {% endfor %}
+{% for data in sleepData %}
+{% if "rain" not in data %}
+<li><button class="date-btn" data-date = "{{data["date"]}}" id={{data["date"]}}>{{data["date"]}}</button><div class="date-info" id ="info-{{data["date"]}}" >
+<ul><li>Temp: {{data["temp"]}}</li>
+<li>Weather Type: {{data["weatherType"]}}</li>
+<li>Humidity: {{data["humidity"]}}</li>
+<li>Cloud Cover: {{data["cloudCover"]}}</li>
+<li>Wind Speed: {{data["windSpeed"]}}</li>
+</ul>
+</div>
+</li>
+{% else %}
+<li>At {{list["list"][index]["dt_txt"]}}: {{rain}} and {{clouds}}. Humidity: {{humidity}} with {{windSpeed}} wind speed.</li>
+{% endif %}
+{% endfor %}
 </ul>
 {% endif %}
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll(".date-btn");
+  const infos = document.querySelectorAll(".date-info");
+
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      const date = button.getAttribute("data-date");
+      const targetDiv = document.getElementById(`info-${date}`);
+
+      // Hide all info divs
+      infos.forEach(div => div.style.display = "none");
+
+      // Show the targeted div
+      if (targetDiv) {
+        targetDiv.style.display = "block";
+      }
+    });
+  });
+});
+</script>
 {% endblock body %}

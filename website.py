@@ -1,27 +1,31 @@
 from weatherapp import WeatherObject
 from flask import Flask, render_template, request, redirect, url_for
-from database import *
+from database import databaseConnection
 import bcrypt
+
 app = Flask(__name__)
 weatherApp = WeatherObject()
 if type(weatherApp) == str:
     print("ERORR DTIME", weatherApp)
-    # redirect to latest URL with the error or show the error on a seperate page and let the user press a back button which 
+    # redirect to latest URL with the error or show the error on a seperate page and let the user press a back button which
     # would take them back to the last URL they were on.
     render_template("error.html", error=weatherApp)
-db = connectDatabase()
+dbConnection = databaseConnection()
+db = dbConnection.db
 cursor = db.cursor()
 logged = False
 user = {}
 forecastLocation = ""
-PREFERENCES = {"cold":[10, 18], "medium": [18, 21], "hot": [21, 25]}
+PREFERENCES = {"cold": [10, 18], "medium": [18, 21], "hot": [21, 25]}
 EMAIL_PREFIX = ["@gmail.com", "@outlook.com", "@btinternet.com", "@bootyman.com"]
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/current", methods = ["POST", "GET"])
+
+@app.route("/current", methods=["POST", "GET"])
 def current():
     signedIn = False
     if request.method == "POST":
@@ -34,7 +38,7 @@ def current():
             sql = f"SELECT * from WeatherData WHERE userID ={user["id"]}"
             cursor.execute(sql)
             result = cursor.fetchone()
-            if result: 
+            if result:
                 error = weatherApp.setLocation("today", result[2])
                 if error != "":
                     return render_template("error.html", error=error)
@@ -50,10 +54,17 @@ def current():
     weatherApp._checkDate(weatherApp.today["dt"])
 
     location = weatherApp.location
-    
-    today= weatherApp.today
+
+    today = weatherApp.today
     dt = weatherApp.unixToUTC(today["dt"])
-    return render_template("weather.html", today=today, signedIn = signedIn, user=user, dt=dt, location=location)
+    return render_template(
+        "weather.html",
+        today=today,
+        signedIn=signedIn,
+        user=user,
+        dt=dt,
+        location=location,
+    )
 
 
 @app.route("/forecast", methods=["POST", "GET"])
@@ -67,7 +78,7 @@ def forecast():
         location = request.form["locationInp"]
         weatherApp.setLocation("forecast", location)
         if error != "":
-            return render_template("error.html", error = error)
+            return render_template("error.html", error=error)
         forecastList = weatherApp.list
         indexes = weatherApp.indexOfTimes(forecastList["list"], 21)
         forecastLocation = location
@@ -80,12 +91,11 @@ def forecast():
             forecastLocation = result[0]
     else:
         forecastLocation = weatherApp.location
-        
+
     weatherApp.setLocation("forecast", forecastLocation)
     forecastList = weatherApp.list
     indexes = weatherApp.indexOfTimes(forecastList["list"], 21)
-    
-    
+
     # if forecastLocation == "":
     #     return render_template("forecast.html", forecastSet = False)
     # location = request.form["locationInp"]
@@ -94,7 +104,10 @@ def forecast():
     # forecastList = weatherApp.list
     # indexes = weatherApp.indexOfTimes(forecastList["list"], 21)
     # print(indexes)
-    return render_template("forecast.html", list = forecastList, indexes = indexes, error = error)
+    return render_template(
+        "forecast.html", list=forecastList, indexes=indexes, error=error
+    )
+
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -112,9 +125,13 @@ def signup():
     if len(result) > 0:
         error = "Username already exists"
         print("Username already exists")
-        return render_template("account.html", error = error)
+        return render_template("account.html", error=error)
     hashedPassword = hashPassword(password)
-    insertValues(db, "users", ["username", "email", "password"], [username, email, hashedPassword])
+    dbConnection.insertValues(
+        "users",
+        ["username", "email", "password"],
+        [username, email, hashedPassword],
+    )
     cursor.execute(sql)
     result = cursor.fetchone()
     user = {"id": result[3], "username": result[0], "email": result[1]}
@@ -143,7 +160,7 @@ def login():
     if len(result) == 1:
         dbPassword = result[0][2]
         # if password == dbPassword:
-        if bcrypt.checkpw(password.encode('utf-8'), dbPassword.encode('utf-8')):
+        if bcrypt.checkpw(password.encode("utf-8"), dbPassword.encode("utf-8")):
             id = result[0][3]
             username = result[0][0]
             email = result[0][1]
@@ -152,16 +169,16 @@ def login():
             error = "Password did not match."
     else:
         error = "Account not found in database."
-        
+
     if error != "":
-        return render_template("account.html", error = error)
+        return render_template("account.html", error=error)
     else:
         return redirect(url_for("account"))
 
 
 @app.route("/account")
 def account():
-    
+
     error = ""
     loggedIn = False
     if user != {}:
@@ -170,10 +187,17 @@ def account():
         cursor.execute(sql)
         result = cursor.fetchone()
         locationPreference, heatPreference = result[1], result[0]
-        
-        return render_template("account.html", loggedIn=loggedIn, locationPreference=locationPreference, heatPreference=heatPreference, error=error)
+
+        return render_template(
+            "account.html",
+            loggedIn=loggedIn,
+            locationPreference=locationPreference,
+            heatPreference=heatPreference,
+            error=error,
+        )
 
     return render_template("account.html", error=error)
+
 
 @app.route("/logout")
 def logout():
@@ -181,9 +205,11 @@ def logout():
     user = {}
     return redirect(url_for("index"))
 
+
 @app.route("/weather")
 def weather():
     return render_template("weathersubmit.html")
+
 
 @app.route("/submitWeather", methods=["POST"])
 def submitWeather():
@@ -199,21 +225,22 @@ def submitWeather():
     sql = f"INSERT INTO preferences (userID, heat) VALUES ({user["id"]}, '{preference.title()}')"
     cursor.execute(sql)
     db.commit()
-
     user["location"] = location
     user["preference"] = preference
     return redirect(url_for("index"))
 
+
 @app.route("/sleep")
 def sleepPreference():
-    # Check to see if the user has a preference set 
-    # and use the preferene against the actual weather forecast to see 
+    # Check to see if the user has a preference set
+    # and use the preferene against the actual weather forecast to see
     # if they will sleep well tonight and some nights in the future
     global user
     if user == {}:
-        return render_template("account.html", error = "Must have an account to see how you will sleep.")
+        return render_template(
+            "account.html", error="Must have an account to see how you will sleep."
+        )
     sql = f"SELECT p.heat, w.location from preferences as p join WeatherData as w on p.userID = w.userID where p.userID ={user["id"]}"
-    
     cursor.execute(sql)
     result = cursor.fetchone()
     if not result:
@@ -222,22 +249,37 @@ def sleepPreference():
     location = result[1]
     weatherApp.setLocation("forecast", location)
 
-    indexes = weatherApp.indexOfTimes(weatherApp.list["list"], 21)
+    sleepData = []
+    indexes = weatherApp.indexOfTimes(weatherApp.list["list"], 22)
     tempRange = PREFERENCES[preference.lower()]
-    for i in indexes:
+    for index in indexes:
+        data = weatherApp.list["list"][index]
+        sleepDict = {
+            "date": data["dt_txt"],
+            "temp": data["main"]["feels_like"],
+            "humidity": data["main"]["humidity"],
+            "weatherType": data["weather"][0]["description"],
+            "cloudCover": data["clouds"]["all"],
+            "windSpeed": data["wind"]["speed"],
+        }
+        if "rain" in data:
+            sleepDict["rain"] = data["rain"]["3h"]
+        sleepData.append(sleepDict)
 
-        temp = weatherApp.list["list"][i]["main"]["feels_like"]
-        if temp in range(tempRange[0], tempRange[1]+1):
-            weatherApp.list["list"][i]["main"]["sleep"] = True
-        else:
-            weatherApp.list["list"][i]["main"]["sleep"] = False
-    return render_template("sleep.html", list = weatherApp.list, indexes = indexes)
+    # Get wind speed, humidity, air quality?
+
+    return render_template(
+        "sleep.html",
+        list=weatherApp.list,
+        indexes=indexes,
+        sleepData=sleepData,
+    )
 
     # create another function to check the temperature versus the users preference
 
+
 @app.route("/changePreferences", methods=["POST", "GET"])
 def changePreferences():
-    
     if request.method == "POST":
         newLocation = request.form["newLocation"]
         newHeat = request.form["heatPreference"]
@@ -245,12 +287,10 @@ def changePreferences():
             # set it
             sql = f"UPDATE WeatherData SET location='{newLocation}' WHERE userID={user["id"]}"
             cursor.execute(sql)
-
         if newHeat != "":
             # set it
             sql = f"UPDATE preferences set heat='{newHeat}' WHERE userID={user["id"]}"
             cursor.execute(sql)
-
         db.commit()
         return redirect(url_for("account"))
     else:
@@ -258,9 +298,9 @@ def changePreferences():
 
 
 def hashPassword(password: str) -> str:
-    password_bytes = password.encode('utf-8')
+    password_bytes = password.encode("utf-8")
     hashedPassword = bcrypt.hashpw(password_bytes, bcrypt.gensalt(12))
-    return hashedPassword.decode('utf-8')
+    return hashedPassword.decode("utf-8")
+
 
 app.run(host="0.0.0.0", port=5000, debug=True)
-
