@@ -2,20 +2,22 @@ import json
 import os
 import requests
 from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = "http://api.openweathermap.org/data/2.5/"
 FORECAST = "forecast?"
 WEATHER = "weather?"
 API_KEY = os.environ.get("OPENWEATHER_API_KEY")
 WEATHER_FILENAME = "weathertoday.json"
-FORECAST_FILENAME = "weatherforecast.json"  
+FORECAST_FILENAME = "weatherforecast.json"
 WEATHER_LIST = ["dt", "main", "wind", "name"]
 FORECAST_LIST = ["list", "city"]
 
 
-
 class WeatherObject:
-    def __init__(self, location = "United Kingdom"):
+    def __init__(self, location="United Kingdom"):
         self.location = location
         self.todaySet = False
         self.listSet = False
@@ -25,10 +27,8 @@ class WeatherObject:
         updateList = [[WEATHER, WEATHER_FILENAME], [FORECAST, FORECAST_FILENAME]]
         for update in updateList:
             error = self._updateFile(update[0], update[1])
-            print(error, "PRINTING ERROR")
-            print(update, "WITH THIS ERROR:", error)
             if error != "":
-                print("ERROR IN WEATHER OBJECT:", error)
+                logger.error(error)
                 return error
 
         # results = self._checkFiles(WEATHER_FILENAME, FORECAST_FILENAMENAME)
@@ -43,7 +43,6 @@ class WeatherObject:
         #             self._updateFile(FORECAST, FORECAST_FILENAME)
         self._setter(WEATHER, FORECAST)
 
-
     def _setToday(self):
         if not self.todaySet:
             try:
@@ -54,7 +53,7 @@ class WeatherObject:
                 self.todaySet = True
                 self._checkDate(self.today["dt"])
             except Exception as err:
-                print(err)
+                logger.error(err)
 
     def _setlist(self):
         if not self.listSet:
@@ -63,7 +62,7 @@ class WeatherObject:
                 self.list = data["list"]
                 self.listSet = True
             except Exception as err:
-                print(err)
+                logger.error(err)
 
     def _setter(self, *addition):
         if len(addition) == 1:
@@ -71,32 +70,31 @@ class WeatherObject:
                 if not self.todaySet:
                     data = self.readWeather(WEATHER_FILENAME)
                     for i in WEATHER_LIST:
-                        self.today[i] = data[i] 
-                self.todaySet = True 
-                
+                        self.today[i] = data[i]
+                self.todaySet = True
+
             elif addition[0] == FORECAST:
-                print("GOT FORECAST")
-                print(self.listSet)
+
+                logger.info("Recevied forecast")
                 if not self.listSet:
-                    print("LIST IS NOT SET")
+                    logger.info("List not set")
                     data = self.readWeather(FORECAST_FILENAME)
                     for i in FORECAST_LIST:
                         self.list[i] = data[i]
-                    print("SETTING LIST")
-                self.listSet = True 
-                
+                    logger.info("Setting list")
+                self.listSet = True
+
         elif len(addition) > 1:
             if not self.todaySet:
-                    data = self.readWeather(WEATHER_FILENAME)
-                    for i in WEATHER_LIST:
-                        self.today[i] = data[i]
+                data = self.readWeather(WEATHER_FILENAME)
+                for i in WEATHER_LIST:
+                    self.today[i] = data[i]
             if not self.listSet:
-                    data = self.readWeather(FORECAST_FILENAME)
-                    for i in FORECAST_LIST:
-                        self.list[i] = data[i]
+                data = self.readWeather(FORECAST_FILENAME)
+                for i in FORECAST_LIST:
+                    self.list[i] = data[i]
             self.todaySet = True
-            self.listSet = True 
-
+            self.listSet = True
 
     def _checkFiles(self, *file):
         results = []
@@ -108,19 +106,17 @@ class WeatherObject:
                 results.append(True)
         return results
 
-
     def _updateFile(self, addition, filename):
         url = BASE_URL + addition + "appid=" + API_KEY + f"&q={self.location}"
-        print(f"LOCATION WHEN SETTING {addition} is {self.location}")
+        logger.info(f"Location: {self.location}")
         r = requests.get(url).json()
         if str(r["cod"]) != "200":
-            print("GOT AN ERROR WHEN UPDATING A FILE\n", r["message"])
+            logger.error(r["message"])
             return r["message"]
         else:
             with open(filename, "w") as f:
                 json.dump(r, f)
             return ""
-        
 
     def _checkDate(self, date):
         dateCheck = datetime.fromtimestamp(date)
@@ -128,14 +124,13 @@ class WeatherObject:
         difference = now - dateCheck
         hour = timedelta(hours=1)
         if difference > hour:
-            print("OUTDATED by an hour")
+            logger.info("Outdated, updating now")
             self._updateFile(WEATHER, WEATHER_FILENAME)
             self.todaySet = False
             self._setter(WEATHER)
             self.todaySet = True
         else:
             return None
-
 
     def readWeather(self, filename):
         with open(filename, "r") as f:
@@ -145,10 +140,9 @@ class WeatherObject:
     def kelvinToCelcius(self, kelvin):
         if kelvin < 100:
             return kelvin
-        return int(round(kelvin-273.15, 0))
+        return int(round(kelvin - 273.15, 0))
 
     def unixToUTC(self, unix):
-        # print("UNIX", unix)
         day = datetime.fromtimestamp(unix).weekday()
         match day:
             case 0:
@@ -177,7 +171,7 @@ class WeatherObject:
             if listTimes[i].hour == time:
                 indexes.append(i)
         return indexes
-    
+
     def setLocation(self, addition, location):
         if addition == "forecast":
 
@@ -190,14 +184,14 @@ class WeatherObject:
             self.todaySet = False
         self.location = location
         error = self._updateFile(addition, filename)
-        print("Check error within setLocation: ", error)
         if error != "":
+            logger.error(error)
             return error
         self._setter(addition)
         self.listTemperatureFix(self.list["list"])
         self.listTimeFix(self.list["list"])
         return ""
-        
+
     def listTemperatureFix(self, list):
         if list[0]["main"]["temp"] < 100:
             return None
@@ -207,9 +201,7 @@ class WeatherObject:
                 list[i]["main"][t] = self.kelvinToCelcius(list[i]["main"][t])
 
     def listTimeFix(self, list):
-        print("TYPE", type(list[0]["dt"]))
         if type(list[0]["dt"]) is str:
-            print("RETURNING")
             return None
         for i in range(len(list)):
             list[i]["dt"] = self.unixToUTC(list[i]["dt"])
@@ -219,22 +211,21 @@ class WeatherObject:
             return data["message"]
         else:
             return ""
-        
+
     def min_maxTemperatures(self, list):
         list[0]["main"]["temp_max"]
         list[0]["main"]["temp_min"]
-        grouped= {}
+        grouped = {}
         for item in list:
             if item["dt_txt"].split()[0] in grouped:
                 grouped[item["dt_txt"].split()[0]].append(item)
             else:
                 grouped[item["dt_txt"].split()[0]] = [item]
-        
+
             item["dt_txt"].split()[0]
 
     # def __str__(self):
     #     return f"---------------\ndt: {self.unixToUTC(self.today["dt"])}\nTemp: {self.kelvinToCelcius(self.today["temp"])}\nFeels like: {self.kelvinToCelcius(self.today["feels_like"])}\n---------------"
-
 
 
 # url = BASE_URL + WEATHER + "appid=" + API_KEY + "&q=SS6"

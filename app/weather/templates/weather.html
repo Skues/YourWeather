@@ -4,16 +4,16 @@
 {% block body %}
 
     {% if user != {} %}
-        <p>Hello {{user["username"]}}</p>
+        <p>Hello {{username}}</p>
     {% endif %}
-    {% if user["location"] != ""%}
-    <p>{{user["location"]}}</p>
+    {% if location != "" %}
+    <p>{{location}}</p>
     {% endif %}
     <div class = "weather-container">
     <h1>Current Weather</h1>
  
     <div class = "search-box">
-    <form action ="/current" method="POST">
+    <form action ="{{url_for('weather.current')}}" method="POST">
         <input type= "text" id= "locationInp" name= "locationInp" placeholder="Enter a location, e.g. London">
         <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Search">
     </form>

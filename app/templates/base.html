@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for("static", filename="styles.css")}}">
+    <title>YourWeather</title>
+    <nav>
+        <ul>
+            <li><a href={{url_for("main.index")}} {% if request.endpoint == "main.index" %}class="active-link"{% endif %}>Home Page</a></li>
+            <li><a href={{url_for("weather.current")}} {% if request.endpoint == 'weather.current' %}class="active-link"{% endif %}>Current Weather</a></li>
+            <li><a href={{url_for("weather.forecast")}} {% if request.endpoint == 'weather.forecast' %}class="active-link"{% endif %}>Forecast</a></li>
+            <li><a href={{url_for("sleep.sleepPreference")}} {% if request.endpoint == 'sleep.sleepPreference' %}class="active-link"{% endif %}>Sleep Page</a></li>
+            <li><a href={{url_for("account.account")}} {% if request.endpoint == 'account.account' %}class="active-link"{% endif %}>Account</a></li>
+
+        </ul>
+    </nav>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>

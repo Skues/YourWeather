@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<form action ="/forecast" method="POST">
+<form action ="{{url_for('weather.forecast')}}" method="POST">
         <label for="locationInp">Enter location: </label>
         <input type= "text" id= "locationInp" name= "locationInp" placeholder="e.g. London">
         <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Submit">

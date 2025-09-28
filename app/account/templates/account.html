@@ -6,7 +6,7 @@
 {% if not loggedIn %}
 <h3>Signup form</h3>
 <div class="signupForm">
-        <form action="/signup" method="POST">
+    <form action="{{url_for("auth.signup")}}" method="POST">
             <label for="username">Enter username: </label>
             <input type="text" id="username" name = "signup_username"><br>
             <label for="email">Enter email: </label>
@@ -19,7 +19,7 @@
 
 <h3>Login form</h3>
 <div class="loginForm">
-    <form action="/login" method="POST">
+    <form action="{{url_for("auth.login")}}" method="POST">
         <label for="username_email">Enter username or email address: </label>
         <input type="text" id="username_email" name = "username_email"><br>
         <label for="password">Enter password: </label>
@@ -28,7 +28,7 @@
     </form>
 </div>
 {% else %}
-<a href={{url_for("logout")}}>Logout</a>
+<a href={{url_for("auth.logout")}}>Logout</a>
 <br>
 <div class="container">
 <h3>Location Preference:</h3>
@@ -39,7 +39,7 @@
 <div class="container">
 <h3>Heat Preference:</h3>
 <p>{{heatPreference}}</p>
-<a href={{url_for("changePreferences")}}>Edit</a>
+<a href={{url_for("account.changePreferences")}}>Edit</a>
 </div>
 
 {% endif %}
