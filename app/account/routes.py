@@ -32,9 +32,9 @@ def account():
     return render_template("account.html", error=error)
 
 
-@accountBP.route("/weather")
+@accountBP.route("/setPreferences")
 def weather():
-    return render_template("weathersubmit.html")
+    return render_template("setPreferences.html")
 
 
 @accountBP.route("/submitWeather", methods=["POST"])

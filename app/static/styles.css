@@ -1,6 +1,11 @@
 nav {
-    background-color: #333;
+    background-color: #ffffff;
+    /* Change background to white for consistency */
     padding: 10px 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    /* Light shadow for subtle depth */
+    border-bottom: 2px solid #f0f4f8;
+    /* Soft bottom border to match body */
 }
 
 nav ul {
@@ -13,28 +18,32 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 10px;
+    margin: 0 20px;
 }
 
 nav ul li a {
-    color: #f2f2f2;
+    color: #3498db;
+    /* Use a blue color that matches the rest of the site */
     text-align: center;
-    padding: 10px 16px;
+    padding: 12px 20px;
+    /* Adjust padding for better clickability */
     text-decoration: none;
     transition: background-color 0.3s ease;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 8px;
+    /* Slightly rounded edges for consistency */
+    font-size: 1em;
+    font-weight: bold;
 }
 
 nav ul li a:hover,
 .active-link {
-    background-color: #04AA6D;
+    background-color: #3498db;
     color: white;
 }
 
 /* Optional: Add a class for the currently active page link */
 .active-link {
-    background-color: #04AA6D;
+    background-color: #2980b9;
     color: white !important;
 }
 
@@ -74,6 +83,7 @@ body {
 }
 
 .search-box {
+    padding-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -189,6 +199,77 @@ p:last-child {
     .container {
         padding: 15px;
     }
+}
+
+.weatherSubmitDiv {
+    background-color: white;
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.weatherPreferenceForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.weatherPreferenceForm label {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.weatherPreferenceForm input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.weatherPreferenceForm input[type="submit"] {
+    padding: 12px;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.weatherPreferenceForm input[type="submit"]:hover {
+    background-color: #1976d2;
+}
+
+#preferences {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #333;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#preferences:focus {
+    border-color: #2196f3;
+    /* Blue border on focus */
+    outline: none;
+    background-color: #f4f9ff;
+    /* Light blue background on focus */
+}
+
+#preferences option {
+    padding: 10px;
+    font-size: 1em;
 }
 
 /*# sourceMappingURL=styles.css.map */

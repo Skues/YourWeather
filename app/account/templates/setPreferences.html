@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body%}
+<h1>Set Your Preferences</h1>
+<div class="weatherSubmitDiv">
+        <form action="/submitWeather" method="POST" class = "weatherPreferenceForm">
+            <label for="location">Enter location: </label>
+            <input type="text" id="location" name = "location"><br>
+            <label for="preference">Select your temperature preferences</label>
+        <select name="preferences" id="preferences">
+            <option value="hot">Hot</option>
+            <option value="cold">Cold</option>
+        </select>
+        {% if  %}
+        
+        {% endif %}
+        <input type= "submit" value = "Sign Up">
+        </form>
+</div>
+{% endblock %}

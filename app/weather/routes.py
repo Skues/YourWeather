@@ -79,8 +79,8 @@ def forecast():
             else:
                 forecastLocation = DEFAULT_LOCATION
         except Exception as e:
-            raise (e)
             forecastLocation = DEFAULT_LOCATION
+            raise (e)
 
     else:
         forecastLocation = DEFAULT_LOCATION

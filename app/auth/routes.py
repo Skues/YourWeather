@@ -39,7 +39,7 @@ def signup():
     cursor.execute(sql)
     result = cursor.fetchone()
     user = {"id": result[3], "username": result[0], "email": result[1]}
-    return redirect(url_for("weather"))
+    return redirect(url_for("account.setPreferences"))
 
 
 @authBP.route("/login", methods=["POST"])

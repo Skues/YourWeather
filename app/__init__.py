@@ -12,7 +12,7 @@ import logging
 def createApp():
     logging.basicConfig(
         level=logging.DEBUG,  # Or INFO in production
-        format="%(asctime)s - %(levelname)s - %(message)s",
+        format="%(levelname)s - %(asctime)s - %(message)s",
     )
     app = Flask(__name__)
     bcrypt.init_app(app)
