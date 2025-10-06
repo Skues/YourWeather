@@ -1,31 +1,33 @@
 {% extends "base.html" %}
 {% block body %}
 {% if error != "" %}
-<p>{{error}}</p>
+<p class="errorMessage">{{error}}</p>
 {% endif %}
 {% if not loggedIn %}
-<h3>Signup form</h3>
+<div class="authContainer">
 <div class="signupForm">
+<h3>Signup form</h3>
     <form action="{{url_for("auth.signup")}}" method="POST">
             <label for="username">Enter username: </label>
-            <input type="text" id="username" name = "signup_username"><br>
+            <input type="text" id="username" name = "signup_username" required>
             <label for="email">Enter email: </label>
-            <input type="text" id="email" name = "signup_email"><br>
+            <input type="text" id="email" name = "signup_email" required>
             <label for="password">Enter password: </label>
-            <input type="text" id="password" name = "signup_password">
+            <input type="password" id="password" name = "signup_password" required>
             <input type= "submit" value = "Sign Up">
         </form>
 </div><br><br>
 
-<h3>Login form</h3>
 <div class="loginForm">
+<h3>Login form</h3>
     <form action="{{url_for("auth.login")}}" method="POST">
         <label for="username_email">Enter username or email address: </label>
-        <input type="text" id="username_email" name = "username_email"><br>
+        <input type="text" id="username_email" name = "username_email" required>
         <label for="password">Enter password: </label>
-        <input type="text" id="login_password" name = "login_password">
+        <input type="password" id="login_password" name = "login_password" required>
         <input type= "submit" value = "Login">
     </form>
+</div>
 </div>
 {% else %}
 <a href={{url_for("auth.logout")}}>Logout</a>

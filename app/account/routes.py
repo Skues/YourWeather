@@ -16,9 +16,12 @@ def account():
     username = session.get("username")
     if username is not None:
         loggedIn = True
-        sql = f"SELECT preferences.heat, WeatherData.location from preferences join WeatherData on preferences.userID = WeatherData.userID where preferences.userID ={session.get("id")}"
-        cursor.execute(sql)
+        sql = "SELECT preferences.heat, WeatherData.location from preferences join WeatherData on preferences.userID = WeatherData.userID where preferences.userID = %s"
+        cursor.execute(sql, (session.get("id")))
         result = cursor.fetchone()
+        if result is None:
+            return redirect(url_for("account.setPreferences"))
+
         locationPreference, heatPreference = result[1], result[0]
 
         return render_template(
@@ -33,28 +36,27 @@ def account():
 
 
 @accountBP.route("/setPreferences")
-def weather():
+def setPreferences():
     return render_template("setPreferences.html")
 
 
-@accountBP.route("/submitWeather", methods=["POST"])
-def submitWeather():
-    global user
+@accountBP.route("/submitPreferences", methods=["POST"])
+def submitPreferences():
     username = session.get("username")
     if username is None:
-        return redirect(url_for("account"))
+        return redirect(url_for("account.account"))
     location = request.form["location"]
     preference = request.form["preference"]
     # check if location is supported by api
-    sql = f"INSERT INTO WeatherData (userID, location) VALUES ({session.get("id")}, '{location}')"
-    cursor.execute(sql)
+    sql = "INSERT INTO WeatherData (userID, location) VALUES (%s, %s)"
+    cursor.execute(sql, (session.get("id"), location))
     db.commit()
-    sql = f"INSERT INTO preferences (userID, heat) VALUES ({session.get("id")}, '{preference.title()}')"
-    cursor.execute(sql)
+    sql = "INSERT INTO preferences (userID, heat) VALUES (%s, %s)"
+    cursor.execute(sql, (session.get("id"), preference.title()))
     db.commit()
     session["location"] = location
     session["preference"] = preference
-    return redirect(url_for("index"))
+    return redirect(url_for("main.index"))
 
 
 @accountBP.route("/changePreferences", methods=["POST", "GET"])
@@ -64,12 +66,12 @@ def changePreferences():
         newHeat = request.form["heatPreference"]
         if newLocation != "":
             # set it
-            sql = f"UPDATE WeatherData SET location='{newLocation}' WHERE userID={session.get("id")}"
-            cursor.execute(sql)
+            sql = "UPDATE WeatherData SET location= %s WHERE userID= %s"
+            cursor.execute(sql, (newLocation, session.get("id")))
         if newHeat != "":
             # set it
-            sql = f"UPDATE preferences set heat='{newHeat}' WHERE userID={session.get("id")}"
-            cursor.execute(sql)
+            sql = "UPDATE preferences set heat= %s WHERE userID= %s"
+            cursor.execute(sql, (newHeat, session.get("id")))
         db.commit()
         return redirect(url_for("account"))
     else:

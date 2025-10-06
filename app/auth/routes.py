@@ -15,7 +15,6 @@ brcyp = bcrypt.bcrypt
 
 @authBP.route("/signup", methods=["POST"])
 def signup():
-    global user
     username = request.form["signup_username"]
     email = request.form["signup_email"]
     index = email.index("@")
@@ -23,8 +22,8 @@ def signup():
         error = "Invalid email type submitted."
         return render_template("account.html", error=error)
     password = request.form["signup_password"]
-    sql = f"SELECT * FROM users WHERE username = '{username}'"
-    cursor.execute(sql)
+    sql = "SELECT * FROM users WHERE username = %s"
+    cursor.execute(sql, (username))
     result = cursor.fetchall()
     if len(result) > 0:
         error = "Username already exists"
@@ -44,20 +43,19 @@ def signup():
 
 @authBP.route("/login", methods=["POST"])
 def login():
-    global user
     error = ""
     username_email = request.form["username_email"]
     password = request.form["login_password"]
     if "@" in username_email:
         index = username_email.index("@")
         if username_email[index:] in EMAIL_PREFIX:
-            sql = f"SELECT * FROM users WHERE email = '{username_email}'"
+            sql = "SELECT * FROM users WHERE email = %s"
         else:
             error = "Not a valid email address"
             return render_template("account.html", error=error)
     else:
-        sql = f"SELECT * FROM users WHERE username = '{username_email}'"
-    cursor.execute(sql)
+        sql = "SELECT * FROM users WHERE username = %s"
+    cursor.execute(sql, (username_email))
     result = cursor.fetchall()
     if len(result) == 1:
         dbPassword = result[0][2]

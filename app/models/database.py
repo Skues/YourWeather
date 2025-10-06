@@ -38,31 +38,31 @@ class databaseConnection:
             valueText += f", '{values[i]}'"
         print(columnText)
         print(valueText)
-        sql = f"INSERT INTO {table} ({columnText}) VALUES ({valueText})"
+        sql = "INSERT INTO %s (%s) VALUES (%s)"
         print(sql)
-        self.db.cursor().execute(sql)
+        self.db.cursor().execute(sql, (table, columnText, valueText))
         self.db.commit()
 
     def selectWhere(self, table, column, value):
-        sql = f"SELECT FROM {table} WHERE {column} = '{value}'"
-        self.db.cursor().execute(sql)
+        sql = "SELECT FROM %s WHERE %s = '%s'"
+        self.db.cursor().execute(sql, (table, column, value))
         self.db.commit()
 
     def showTable(self, cursor, table):
-        sql = f"SELECT * FROM {table}"
-        cursor.execute(sql)
+        sql = "SELECT * FROM %s"
+        cursor.execute(sql, (table))
         result = cursor.fetchall()
         print(result)
 
     def deleteID(self, table, id):
-        sql = f"DELETE FROM {table} WHERE id = {id}"
-        self.db.cursor().execute(sql)
+        sql = "DELETE FROM %s WHERE id = %s"
+        self.db.cursor().execute(sql, (table, id))
         self.db.commit()
         return False
 
     def deleteAll(self, table):
-        sql = f"DELETE FROM {table}"
-        self.db.cursor().execute(sql)
+        sql = "DELETE FROM %s"
+        self.db.cursor().execute(sql, (table))
         self.db.commit()
         return False
 

@@ -1,3 +1,254 @@
+.forecastForm {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 30px auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+}
+
+.forecastForm label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.forecastForm input[type="text"] {
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.forecastForm input[type="text"]:focus {
+    border-color: #3498db;
+    background-color: #f0f8ff;
+    outline: none;
+}
+
+.forecastForm input[type="submit"] {
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.forecastForm input[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+/* === FORECAST TITLE === */
+.forecastTitle {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 1.6rem;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* === FORECAST LIST === */
+.forecastList {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 0;
+    list-style: none;
+}
+
+.forecastList li {
+    background-color: #ffffff;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    line-height: 1.6;
+    font-size: 1rem;
+    color: #333;
+}
+
+.forecastList li strong {
+    color: #2c3e50;
+}
+
+/* === MOBILE FRIENDLINESS === */
+@media (max-width: 600px) {
+    .forecastForm {
+        padding: 20px;
+    }
+
+    .forecastForm input[type="submit"] {
+        width: 100%;
+    }
+
+    .forecastTitle {
+        font-size: 1.3rem;
+    }
+
+    .forecastList li {
+        font-size: 0.95rem;
+    }
+}
+
+.errorMessage {
+    position: fixed;
+    top: 20px;
+    /* adjust for vertical placement */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffe6e6;
+    color: #d8000c;
+    border: 1px solid #d8000c;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    width: fit-content;
+    text-align: center;
+    animation: fadeInDown 0.3s ease;
+}
+
+.authContainer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+    /* stacks on small screens */
+    margin: 40px auto;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.signupForm,
+.loginForm {
+    flex: 1 1 400px;
+    background-color: #ffffff;
+    max-width: 500px;
+    min-width: 300px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.signupForm:hover,
+.loginForm:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.signupForm form,
+.loginForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.signupForm label,
+.loginForm label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.signupForm input[type="text"],
+.loginForm input[type="text"],
+.signupForm input[type="password"],
+.loginForm input[type="password"] {
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.signupForm input[type="text"]:focus,
+.loginForm input[type="text"]:focus,
+.signupForm input[type="password"]:focus,
+.loginForm input[type="password"]:focus {
+    border-color: #3498db;
+    background-color: #f0f8ff;
+    outline: none;
+}
+
+.signupForm input[type="submit"],
+.loginForm input[type="submit"] {
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.signupForm input[type="submit"]:hover,
+.loginForm input[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+h3 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 1.6em;
+    margin-top: 40px;
+}
+
+/* === AUTH PREFERENCE CONTAINERS === */
+
+.container h3 {
+    color: #2c3e50;
+    font-size: 1.3em;
+    margin-top: 20px;
+}
+
+.container p {
+    font-size: 1.1em;
+    background: #f7fbff;
+    padding: 10px 15px;
+    border-left: 4px solid #3498db;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.container a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #2196f3;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.container a:hover {
+    background-color: #1976d2;
+}
+
+/* === MOBILE FRIENDLINESS === */
+@media (max-width: 600px) {}
+
 nav {
     background-color: #ffffff;
     /* Change background to white for consistency */
@@ -62,6 +313,23 @@ ul li {
         text-align: center;
         padding: 10px 8px;
     }
+
+    .signupForm,
+    .loginForm {
+        padding: 20px;
+    }
+
+    .signupForm input[type="text"],
+    .loginForm input[type="text"],
+    .signupForm input[type="password"],
+    .loginForm input[type="password"] {
+        font-size: 0.95rem;
+    }
+
+    .signupForm input[type="submit"],
+    .loginForm input[type="submit"] {
+        font-size: 0.95rem;
+    }
 }
 
 body {
@@ -80,6 +348,7 @@ body {
     width: 90%;
     max-width: 500px;
     margin: auto;
+    margin-top: 50px;
 }
 
 .search-box {
@@ -138,7 +407,7 @@ h1 {
     color: #3498db;
     font-size: 2.8em;
     text-align: center;
-    margin: 40px 0 20px;
+    margin: 20px 0 20px;
     padding-bottom: 10px;
     border-bottom: 3px solid #8ac3ea;
     max-width: 90%;

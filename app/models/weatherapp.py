@@ -186,7 +186,7 @@ class WeatherObject:
         error = self._updateFile(addition, filename)
         if error != "":
             logger.error(error)
-            return error
+            raise LocationException(f"Location ({self.location}) could not be found.")
         self._setter(addition)
         self.listTemperatureFix(self.list["list"])
         self.listTimeFix(self.list["list"])
@@ -247,5 +247,11 @@ def writeWeather(url):
 
 # for i in range(2, len(app.list), 8):
 
+class LocationException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self) -> str:
+        return self.message
 #     print(i+1, app.unixToUTC(app.list[i]["dt"]).hour)
 # print(app.unixToUTC(app.list[-1]["dt"])-app.unixToUTC(app.list[0]["dt"]))
