@@ -50,7 +50,6 @@
     background-color: #2980b9;
 }
 
-/* === FORECAST TITLE === */
 .forecastTitle {
     text-align: center;
     color: #2c3e50;
@@ -59,7 +58,6 @@
     margin-bottom: 20px;
 }
 
-/* === FORECAST LIST === */
 .forecastList {
     max-width: 800px;
     margin: 0 auto 40px;
@@ -82,7 +80,6 @@
     color: #2c3e50;
 }
 
-/* === MOBILE FRIENDLINESS === */
 @media (max-width: 600px) {
     .forecastForm {
         padding: 20px;
@@ -104,7 +101,6 @@
 .errorMessage {
     position: fixed;
     top: 20px;
-    /* adjust for vertical placement */
     left: 50%;
     transform: translateX(-50%);
     background-color: #ffe6e6;
@@ -128,7 +124,6 @@
     align-items: flex-start;
     gap: 40px;
     flex-wrap: wrap;
-    /* stacks on small screens */
     margin: 40px auto;
     max-width: 1000px;
     padding: 20px;
@@ -214,7 +209,6 @@ h3 {
     margin-top: 40px;
 }
 
-/* === AUTH PREFERENCE CONTAINERS === */
 
 .container h3 {
     color: #2c3e50;
@@ -246,17 +240,13 @@ h3 {
     background-color: #1976d2;
 }
 
-/* === MOBILE FRIENDLINESS === */
 @media (max-width: 600px) {}
 
 nav {
     background-color: #ffffff;
-    /* Change background to white for consistency */
     padding: 10px 0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    /* Light shadow for subtle depth */
     border-bottom: 2px solid #f0f4f8;
-    /* Soft bottom border to match body */
 }
 
 nav ul {
@@ -274,14 +264,11 @@ nav ul li {
 
 nav ul li a {
     color: #3498db;
-    /* Use a blue color that matches the rest of the site */
     text-align: center;
     padding: 12px 20px;
-    /* Adjust padding for better clickability */
     text-decoration: none;
     transition: background-color 0.3s ease;
     border-radius: 8px;
-    /* Slightly rounded edges for consistency */
     font-size: 1em;
     font-weight: bold;
 }
@@ -292,7 +279,6 @@ nav ul li a:hover,
     color: white;
 }
 
-/* Optional: Add a class for the currently active page link */
 .active-link {
     background-color: #2980b9;
     color: white !important;
@@ -393,7 +379,6 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* SCSS for Index Page Styling */
 .container {
     background-color: white;
     max-width: 800px;
@@ -433,7 +418,6 @@ p:last-child {
 
 .date-info {
     display: none;
-    /* Hide all info divs initially */
     margin-top: 10px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -530,15 +514,11 @@ p:last-child {
 
 #preferences:focus {
     border-color: #2196f3;
-    /* Blue border on focus */
     outline: none;
     background-color: #f4f9ff;
-    /* Light blue background on focus */
 }
 
 #preferences option {
     padding: 10px;
     font-size: 1em;
 }
-
-/*# sourceMappingURL=styles.css.map */
