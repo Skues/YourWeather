@@ -50,7 +50,7 @@ class databaseConnection:
 
     def showTable(self, cursor, table):
         sql = "SELECT * FROM %s"
-        cursor.execute(sql, (table))
+        cursor.execute(sql, [table])
         result = cursor.fetchall()
         print(result)
 

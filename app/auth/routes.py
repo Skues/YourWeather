@@ -23,7 +23,7 @@ def signup():
         return render_template("account.html", error=error)
     password = request.form["signup_password"]
     sql = "SELECT * FROM users WHERE username = %s"
-    cursor.execute(sql, (username))
+    cursor.execute(sql, [username])
     result = cursor.fetchall()
     if len(result) > 0:
         error = "Username already exists"
@@ -55,7 +55,7 @@ def login():
             return render_template("account.html", error=error)
     else:
         sql = "SELECT * FROM users WHERE username = %s"
-    cursor.execute(sql, (username_email))
+    cursor.execute(sql, [username_email])
     result = cursor.fetchall()
     if len(result) == 1:
         dbPassword = result[0][2]

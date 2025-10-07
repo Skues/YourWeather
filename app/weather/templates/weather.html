@@ -3,6 +3,10 @@
 
 {% block body %}
 
+{% if error != "" %}
+<p class="errorMessage">{{error}}</p>
+{% endif %}
+
     <div class = "weather-container">
     <h1>Current Weather</h1>
  
@@ -12,7 +16,16 @@
         <input type="submit" id= "locationSubmit" name= "locationSubmit" value="Search">
     </form>
     </div>
-<div class = weather-info">
+<p>{{error}}</p>
+{% if error == "" %}
+
+<div class = "weather-info">
+<div class= "weather-header">
+    {% if locationInfo != {} %}
+    <img src = "https://openweathermap.org/img/wn/{{locationInfo.weatherIcon}}@4x.png"</img>
+
+    {% endif %}
+<div class="weather-location">
     <strong>{{dt}} IN {{today["name"]}}{% if today["name"] != location %}, {{location}}{% endif %}</strong>
 
     <p>Temperature is currently {{today["main"]["temp"]}}°C degrees and feels like {{today["main"]["feels_like"]}}°C</p>
@@ -21,8 +34,11 @@
     <p>Humidity: {{today["main"]["humidity"]}}%</p>
     <p>Wind: {{today["wind"]["speed"]}} m/s (Gusts up to 6.81m/s)</p>
 </div>
-   </div>
+</div>
 
-    <p>{{today}}</p>
+</div>
     
+{% endif %}
+
+   </div>
 {% endblock %}

@@ -224,6 +224,17 @@ class WeatherObject:
 
             item["dt_txt"].split()[0]
 
+    def checkLocation(self, location):
+        url = f"{BASE_URL}weather?appid={API_KEY}&q={location}"
+        r = requests.get(url).json()
+        if str(r["cod"]) != "200":
+            print("cod : ", r["cod"])
+
+            logger.error(r["message"])
+            return r["message"], r
+        print(r)
+        return "", CurrentWeather(r)
+
     # def __str__(self):
     #     return f"---------------\ndt: {self.unixToUTC(self.today["dt"])}\nTemp: {self.kelvinToCelcius(self.today["temp"])}\nFeels like: {self.kelvinToCelcius(self.today["feels_like"])}\n---------------"
 
@@ -237,6 +248,64 @@ def writeWeather(url):
         json.dump(r, f)
 
 
+class CurrentWeather:
+    def __init__(self, data):
+        coord = data.get("coord", {})
+        self.lon = coord.get("lon")
+        self.lat = coord.get("lat")
+        weather = data["weather"][0]
+        weather = data.get("weather", [])[0]
+        self.weatherID = weather.get("id")
+        self.weatherMain = weather.get("main")
+        self.weatherDescription = weather.get("description")
+        self.weatherIcon = weather.get("icon")
+        main = data.get("main")
+        self.temp = main.get("temp")
+
+        self.feelsLike = main.get("feels_like")
+        self.minTemp = main.get("temp_min")
+        self.maxTemp = main.get("temp_main")
+        self.pressure = main.get("pressure")
+        self.humidity = main.get("humidity")
+        self.seaLevel = main.get("sea_level")
+        self.groundLevel = main.get("grnd_level")
+        self.visibility = data.get("visibility")
+        wind = data.get("wind")
+        self.windSpeed = wind.get("speed")
+        self.windDegree = wind.get("deg")
+        self.windGust = wind.get("gust")
+        self.cloudPercent = data.get("clouds").get("all")
+        unixDT = data.get("dt")
+        self.datetime = self.unixToUTC(unixDT)
+        sys = data.get("sys")
+        self.country = sys.get("country")
+        unixSunrise = sys.get("sunrise")
+        self.sunrise = self.unixToUTC(unixSunrise)
+        unixSunset = sys.get("sunset")
+        self.sunset = self.unixToUTC(unixSunset)
+        self.locationName = data.get("name")
+        self.cod = data.get("cod")
+
+    def unixToUTC(self, unix):
+        day = datetime.fromtimestamp(unix).weekday()
+        match day:
+            case 0:
+                day = "Monday"
+            case 1:
+                day = "Tuesday"
+            case 2:
+                day = "Wednesday"
+            case 3:
+                day = "Thursday"
+            case 4:
+                day = "Friday"
+            case 5:
+                day = "Saturday"
+            case 6:
+                day = "Sunday"
+        return f"{day} {datetime.fromtimestamp(unix).strftime("%d/%m, %H:%M")}"
+
+
 # app = WeatherObject()
 # print(app.today["main"]["temp"])
 # dateList = []
@@ -247,11 +316,14 @@ def writeWeather(url):
 
 # for i in range(2, len(app.list), 8):
 
+
 class LocationException(Exception):
     def __init__(self, message):
         self.message = message
 
     def __str__(self) -> str:
         return self.message
+
+
 #     print(i+1, app.unixToUTC(app.list[i]["dt"]).hour)
 # print(app.unixToUTC(app.list[-1]["dt"])-app.unixToUTC(app.list[0]["dt"]))

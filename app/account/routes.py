@@ -1,5 +1,8 @@
+import logging
+from app.models.weatherapp import WeatherObject
 from . import accountBP
 
+weatherApp = WeatherObject()
 from flask import redirect, render_template, session, url_for, request
 
 from ..models.database import databaseConnection
@@ -17,17 +20,20 @@ def account():
     if username is not None:
         loggedIn = True
         sql = "SELECT preferences.heat, WeatherData.location from preferences join WeatherData on preferences.userID = WeatherData.userID where preferences.userID = %s"
-        cursor.execute(sql, (session.get("id")))
+        cursor.execute(sql, [session.get("id")])
         result = cursor.fetchone()
         if result is None:
             return redirect(url_for("account.setPreferences"))
 
+        error, locationInfo = weatherApp.checkLocation(result[1])
+        print(locationInfo)
         locationPreference, heatPreference = result[1], result[0]
 
         return render_template(
             "account.html",
             loggedIn=loggedIn,
             locationPreference=locationPreference,
+            locationInfo=locationInfo,
             heatPreference=heatPreference,
             error=error,
         )
@@ -37,22 +43,27 @@ def account():
 
 @accountBP.route("/setPreferences")
 def setPreferences():
-    return render_template("setPreferences.html")
+    error = ""
+    return render_template("setPreferences.html", error=error)
 
 
 @accountBP.route("/submitPreferences", methods=["POST"])
 def submitPreferences():
     username = session.get("username")
+    logging.log(1, f"{username} username ")
     if username is None:
         return redirect(url_for("account.account"))
     location = request.form["location"]
+    error, data = weatherApp.checkLocation(location)
+    if error != "":
+        return render_template("setPreferences.html", error=error)
+
     preference = request.form["preference"]
-    # check if location is supported by api
     sql = "INSERT INTO WeatherData (userID, location) VALUES (%s, %s)"
-    cursor.execute(sql, (session.get("id"), location))
+    cursor.execute(sql, [session.get("id"), location])
     db.commit()
     sql = "INSERT INTO preferences (userID, heat) VALUES (%s, %s)"
-    cursor.execute(sql, (session.get("id"), preference.title()))
+    cursor.execute(sql, [session.get("id"), preference.title()])
     db.commit()
     session["location"] = location
     session["preference"] = preference
@@ -67,11 +78,11 @@ def changePreferences():
         if newLocation != "":
             # set it
             sql = "UPDATE WeatherData SET location= %s WHERE userID= %s"
-            cursor.execute(sql, (newLocation, session.get("id")))
+            cursor.execute(sql, [newLocation, session.get("id")])
         if newHeat != "":
             # set it
             sql = "UPDATE preferences set heat= %s WHERE userID= %s"
-            cursor.execute(sql, (newHeat, session.get("id")))
+            cursor.execute(sql, [newHeat, session.get("id")])
         db.commit()
         return redirect(url_for("account"))
     else:

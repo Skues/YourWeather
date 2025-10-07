@@ -23,9 +23,16 @@
             {% if item["pop"] == 0 %}
                 {% set rain = "" %}
             {% else %}
-                {% set rain = "Chance of rain: {}%".format(item["pop"]*100) %}
+                {% set rain = ", Chance of rain: {}%".format(item["pop"]*100) %}
             {% endif %}
-        <li><strong>{{item["dt"]}}</strong> - Temperature: {{item["main"]["temp"]}}°C, Feels like: {{item["main"]["feels_like"]}}°C, {{rain}}</li>
+            <li class="forecast-item">
+              <div class="forecast-content">
+                <img class="forecast-img" src="https://openweathermap.org/img/wn/{{ item["weather"][0]["icon"] }}@2x.png" alt="Weather Icon">
+                <div class="forecast-details">
+                <strong>{{ item["dt"] }}</strong><strong>{{item["weather"][0]["description"].title()}}</strong> - Temperature: {{ item["main"]["temp"] }}°C, Feels like: {{ item["main"]["feels_like"] }}°C {{ rain }}
+                </div>
+              </div>
+            </li>
         {% endfor%}
     </ul>
 {% endif %}

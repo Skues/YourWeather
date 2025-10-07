@@ -23,7 +23,7 @@ def sleepPreference():
             "account.html", error="Must have an account to see how you will sleep."
         )
     sql = "SELECT p.heat, w.location from preferences as p join WeatherData as w on p.userID = w.userID where p.userID = %s"
-    cursor.execute(sql, (session.get("id")))
+    cursor.execute(sql, [session.get("id")])
     result = cursor.fetchone()
     if not result:
         return "No user found"
